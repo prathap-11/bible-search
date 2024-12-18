@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>தேடல்</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        .container {
+            width: 60%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            font-family: 'Latha', sans-serif;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-family: 'Latha', sans-serif;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-check {
+            margin-top: 10px;
+        }
+        .btn {
+            background-color: #17a2b8;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #138496;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>தேடல்</h1>
+        <form method="get">
+            <!-- Tamil Search -->
+            <div class="form-group">
+                <label class="form-label" for="tamil_search">தமிழில்</label>
+                <input
+                    type="text"
+                    name="tamil_search"
+                    id="tamil_search"
+                    class="form-control"
+                    placeholder="உதாரணம்: karththar, AsIrvaatham, iSravEI, thaaniyEI"
+                    value="{{ tamil_search_query }}">
+            </div>
+
+            <!-- English Search -->
+            <div class="form-group">
+                <label class="form-label" for="english_search">இங்கே ஆங்கிலத்தில் தட்டச்சு செய்யவும்</label>
+                <input
+                    type="text"
+                    name="english_search"
+                    id="english_search"
+                    class="form-control"
+                    placeholder="Example: God, Blessing, Grace"
+                    value="{{ english_search_query }}">
+            </div>
+
+            <!-- Whole Bible Search -->
+            <div class="form-group">
+                <label class="form-label">
+                    <input type="checkbox" name="whole_bible" {% if whole_bible %}checked{% endif %}>
+                    முழு வேதாகமத்தில்
+                </label>
+                <p>Select [✓] the box to search in the whole Bible</p>
+            </div>
+
+            <!-- Select Book -->
+            <div class="form-group">
+                <label class="form-label" for="book">ஏதாவது ஒரு புத்தகத்தை மட்டும்</label>
+                <select name="book" id="book" class="form-control">
+                    <option value="">Select Book</option>
+                    {% for book in books %}
+                        <option value="{{ book }}" {% if book == selected_book %}selected{% endif %}>
+                            {{ book }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group">
+                <button type="submit" class="btn">தேடு</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

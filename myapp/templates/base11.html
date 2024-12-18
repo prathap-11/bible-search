@@ -1,0 +1,254 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>TAMIL BIBLE SEARCH</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="{% static 'css/styles.css'%}" rel="stylesheet" />
+    <style>
+        <!----------------->
+        .container
+        {
+        display:
+        flex;
+        /*
+        width:
+        207px;
+        */
+        align-items:
+        center;
+        gap:
+        10px;
+        height:
+        89px;
+        background-color:
+        black;
+        }
+        #book
+        {
+        padding:
+        5px;
+        /*
+        width:
+        225px;
+        */
+        width:
+        202px;
+        background-color:
+        black;
+        border:
+        2px
+        solid
+        white;
+        color:
+        white;
+        font-size:
+        16px;
+        border-radius:
+        24px;
+        height:
+        31px;
+        margin-left:
+        268px;
+        }
+        #chapter,
+        #verse
+        {
+        padding:
+        5px;
+        border:
+        1px
+        solid
+        #ccc;
+        border-radius:
+        24px;
+        width:
+        207px;
+        height:
+        31px;
+        }
+        button
+        {
+        padding:
+        5px;
+        border:
+        2px
+        solid
+        white;
+        color:
+        white;
+        background-color:
+        black;
+        font-size:
+        16px;
+        border-radius:
+        24px;
+        width:
+        207px;
+        height:
+        31px;
+        }
+
+    <!----------->
+    a.nav-link{
+    color: black;
+    text-decoration: none;
+    }
+    .navbar .nav-link {
+    transition: none; /* Removes transition effect */
+    text-decoration: none; /* Ensures no underline by default */
+    color: #000; /* Adjust color as needed, especially if background is light */
+    }
+
+    .navbar .nav-link:hover {
+    text-decoration: underline;
+
+    font-weight: 800; /* Adds underline on hover */
+    }
+    .navbar .nav-link {
+    position: relative;
+    text-decoration: none;
+    font-weight: bold; /* Makes the text bold */
+    text-decoration: none; /* Removes default underline */
+    color: #000; /* Adjust color as needed */
+    }
+
+    .navbar .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    text-decoration: none;
+    bottom: -4px; /* Adjusts space between text and underline */
+    width: 100%;
+    height: 2px; /* Thickness of the underline */
+    background-color: #000; /* Color of the underline */
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease;
+    }
+
+    .navbar .nav-link:hover::after {
+    transform: scaleX(1); /* Expands underline on hover */
+    transform-origin: bottom left;
+    }
+    </style>
+</head>
+
+<body>
+    <div>
+        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-white">
+
+            <div class="container px-lg-5">
+                <div> <img src="{% static 'images/logo.png' %}" alt="Logo"></div>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link "" href=" #!" style="text-decoration: none;">Tamil
+                                Bible</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!" style="text-decoration: none;">English
+                                Bible</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!" style="text-decoration: none;">Search</a>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="#!" style="text-decoration: none;">Wallpaper</a>
+                        </li>
+
+                        <!-- Study Tools Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="studyToolsDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
+                                Study Tools &nbsp;<i class="fa-solid fa-caret-down"></i>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="studyToolsDropdown">
+                                <li><a class="dropdown-item" href="https://tamilbiblesearch.com/tamil-bible-study"><i
+                                            class="fa-solid fa-caret-right"></i>&nbsp;Bible Devotions</a></li>
+                                <li><a class="dropdown-item"
+                                        href="https://tamilbiblesearch.com/bible-reference-tamil"><i
+                                            class="fa-solid fa-caret-right"></i>&nbsp;Bible References</a></li>
+                                <li><a class="dropdown-item" href="https://tamilbiblesearch.com/bible-articles-tamil"><i
+                                            class="fa-solid fa-caret-right"></i>&nbsp;Bible Articles</a></li>
+                                <li><a class="dropdown-item"
+                                        href="https://tamilbiblesearch.com/bible-kavithaikal-tamil"><i
+                                            class="fa-solid fa-caret-right"></i>&nbsp;Bible Kavithaigal</a></li>
+                                <li><a class="dropdown-item"
+                                        href="https://tamilbiblesearch.com/bible-literature-tamil"><i
+                                            class="fa-solid fa-caret-right"></i>&nbsp;Bible Literature</a></li>
+                                <li><a class="dropdown-item"
+                                        href="https://tamilbiblesearch.com/tamil-christian-sermons"><i
+                                            class="fa-solid fa-caret-right"></i>&nbsp;Prasanga Kurippugal</a></li>
+                                <li><a class="dropdown-item"
+                                        href="https://tamilbiblesearch.com/christian-drama-tamil"><i
+                                            class="fa-solid fa-caret-right"></i>&nbsp;Screenplays</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!"
+                                style="text-decoration: none;color: black;">Quiz</a></li>
+
+                        <!-- Info Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="infoDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
+                                Info &nbsp;<i class="fa-solid fa-caret-down"></i>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="infoDropdown">
+                                <li><a class="dropdown-item" href="https://tamilbiblesearch.com/tamil-bible-info"><i
+                                            class="fa-solid fa-caret-right"></i>&nbsp;Our Info</a></li>
+                                <li><a class="dropdown-item" href="https://tamilbiblesearch.com/editor-info"><i
+                                            class="fa-solid fa-caret-right"></i>&nbsp;Editor Info</a></li>
+                                <li><a class="dropdown-item" href="https://tamilbiblesearch.com/events"><i
+                                            class="fa-solid fa-caret-right"></i>&nbsp;Events</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <header class="py-5 bg-dark" style="height: 116px;">
+        <div class="col-md-12 mt-4">
+            <select id="book" name="book">
+                <option value="" disabled selected>Select a Book</option>
+                {% for book in books %}
+                <option value="{{ book.book }}">{{ book.bookname }}</option>
+                {% endfor %}
+
+                <!-- Add more book options as needed -->
+            </select>
+            <input type="text" id="chapter" placeholder="Enter Chapter">
+            <input type="text" id="verse" placeholder="Enter Verse">
+            <button>Search</button>
+        </div>
+    </header>
+    <section class="pt-4">
+        <div class="container px-lg-5">
+
+
+            {% block content %}
+
+            {% endblock %}
+
+        </div>
+    </section>
+
+    <!--<footer class="py-5 bg-dark">
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p></div>
+        </footer>-->
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="js/scripts.js"></script>
+</body>
+
+</html>

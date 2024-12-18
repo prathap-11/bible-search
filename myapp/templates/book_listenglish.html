@@ -1,0 +1,209 @@
+{% extends 'base_english.html' %}
+{% load static %}
+{% block content %}
+<style>
+    /* General container styling */
+    .containerbooksz {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+    
+    /* Books container grid for responsive layout */
+    .books-container {
+       grid-template-columns: repeat(auto-fit, minmax(166px, 1fr));
+    width: 100%;
+    padding: 83px;
+    margin-top: -68px;
+    display: flex;
+    gap: 48px;
+    }
+    
+    /* Individual book section styling */
+    .book-sectionenglish {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .book-sectionenglish h2 {
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: black;
+        text-shadow: 1px 1px 1px #040d1e;
+        margin-bottom: 1rem;
+    }
+    
+    /* Book item styles */
+    <!--.book-itemenglish {
+        background-color: #003366;
+        color: #ffffff;
+        padding: 10px;
+        text-align: center;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }-->
+     .book-itemenglish{
+         text-transform: uppercase;
+    font-size: 19px;
+    font-weight: 400;
+    padding: 8px;
+}
+}
+    .book-itemenglish:hover {
+        background-color: #00509e;
+    }
+    
+    /* Chapter list styling */
+    .chapter-listenglish {
+        display: none;
+        padding-top: 10px;
+        border-top: 1px solid #ddd;
+        grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+        gap: 10px;
+    }
+    
+    .chapter-listenglish .chapterenglish {
+            border: 1px solid black;
+    background-color: white;
+    color: black;
+    padding: 2px;
+    text-align: center;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 14px;
+    width: 30px;
+    height: 28px;
+    }
+    
+    .chapter-listenglish .chapterenglish:hover {
+        background-color: #c3d0ff;
+    }
+    a{
+        color: black;
+        text-transform: capitalize;
+    }
+    
+    /* Media queries for mobile view */
+    @media (max-width: 768px) {
+        .book-sectionenglish {
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+    
+        .book-sectionenglish h2 {
+            font-size: 1.2rem;
+        }
+    
+        .book-itemenglish {
+            font-size: 0.9rem;
+            padding: 8px;
+        }
+    
+        .chapter-listenglish {
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+            gap: 5px;
+        }
+    
+        .chapter-listenglish .chapterenglish {
+            font-size: 0.8rem;
+            padding: 5px;
+        }
+    }
+    select#book.form-select{
+        border-radius: 15px;
+        color: white;
+    }
+    .form-select, .form-control {
+    border-radius: 4px;
+    background-color: black;
+    border-color: white;
+    color: white;
+    box-shadow: none;
+}
+    </style>
+    
+    
+ <ul class="breadcrumb" style=" padding: 10px 16px;
+     list-style: none;
+     margin: 20px;
+     background-color: #eee;
+     width: 900px;margin-left: 358px;
+    font-weight: 600;margin-left: 358px;
+    font-weight: 600;">
+         {% for breadcrumb in breadcrumbs %}
+             <li><a href="{{ breadcrumb.url }}" style="text-decoration: none;color: black;">{{ breadcrumb.name }}</a></li>
+             {% if not forloop.last %} > {% endif %}
+         {% endfor %}
+     </ul>
+       
+        <div class="books-container">
+            <!-- Old Testament Section -->
+            <div class="book-sectionenglish">
+                <h2  style="font-size: 39px;">OLD TESTAMENT</h2>
+                <div class="book-listenglish">
+                    {% for book_info in oldbook_with_chapters %}
+                    <div class="book-itemenglish" onclick="toggleChapters(this, '{{ book_info.book.bookname|lower }}')">
+                        {{ book_info.book.bookname }}
+                    </div>
+                    <div class="chapter-listenglish">
+                        {% for chapter in book_info.chapters %}
+                        <div class="chapterenglish">
+                            <a href="{% url 'chapter_detail_english' book_info.book.bookname chapter %}" style="text-decoration: none;">
+                                {{ chapter }}
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+    
+            <!-- New Testament Section -->
+            <div class="book-sectionenglish">
+                <h2 style="font-size: 39px;">NEW TESTAMENT</h2>
+                <div class="book-listenglish">
+                    {% for book_info in newbook_with_chapters %}
+                    <div class="book-itemenglish" onclick="toggleChapters(this, '{{ book_info.book.bookname|lower }}')">
+                        {{ book_info.book.bookname }}
+                    </div>
+                    <div class="chapter-listenglish">
+                        {% for chapter in book_info.chapters %}
+                        <div class="chapterenglish">
+                            <a href="{% url 'chapter_detail_english' book_info.book.bookname chapter %}" style="text-decoration: none;">
+                                {{ chapter }}
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    function toggleChapters(bookElement, bookName) {
+        const chapterList = bookElement.nextElementSibling;
+        chapterList.style.display = chapterList.style.display === "grid" ? "none" : "grid";
+    }
+    </script>
+    
+
+{% endblock %}
+</body>
+</html>

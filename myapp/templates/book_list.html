@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    /* General Styling */
+    .containerbooksz {
+        width: 100%; /* Set to 100% for mobile responsiveness */
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+    
+    /* Two Column Layout for Books */
+    .books-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+        gap: 20px;
+        width: 100%;
+        margin-top: 20px;
+    }
+    
+    /* Individual Book Section Styling */
+    .book-sectionbook {
+        padding: 20px; /* Reduce padding for better mobile fit */
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .book-sectionbook h2 {
+        text-align: center;
+        font-size: 24px; /* Adjust font size for smaller screens */
+        margin-bottom: 1rem;
+        font-weight: 600;
+        color: black;
+        text-shadow: 1px 1px 1px #040d1e;
+    }
+    
+    /* Book Names Styling */
+    .book-listbook {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    a {
+        color: black;
+        font-weight: 500;
+        text-decoration: none;
+    }
+    
+    .book-itembook {
+       padding: 10px;
+    background-color: #003366;
+    color: #ffffff;
+    text-align: center;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 19px;
+    }
+    
+    .book-itembook:hover {
+        background-color: #00509e;
+    }
+    
+    /* Chapter List Styling */
+    .chapter-listbook {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(50px, 1fr)); /* Adjust grid for responsive chapter layout */
+        gap: 10px;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #ddd;
+        display: none; /* Initially hidden */
+    }
+    
+    .chapter-listbook .chapterbook {
+       border: 1px solid black;
+    background-color: white;
+    color: black;
+    padding: 2px;
+    text-align: center;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 14px;
+    width: 30px;
+    height: 28px;
+    }
+    
+    .chapter-listbook .chapterbook:hover {
+        background-color: #c3d0ff;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .book-sectionbook {
+            padding: 15px; /* Reduce padding on smaller devices */
+        }
+    
+        .book-sectionbook h2 {
+            font-size: 20px; /* Adjust heading size */
+        }
+    
+        .books-container {
+            grid-template-columns: 1fr; /* Stack sections vertically on small screens */
+        }
+    
+        .book-itembook {
+            font-size: 14px; /* Adjust button text size */
+        }
+    
+        .chapter-listbook {
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr)); /* Smaller chapter buttons for mobile */
+        }
+    
+        .chapter-listbook .chapterbook {
+            font-size: 12px; /* Adjust chapter font size for smaller screens */
+        }
+    }
+    
+    </style> 
+     
+   
+    
+<div class="containerbooksz">
+    <ul class="breadcrumb" style=" padding: 10px 16px;
+    list-style: none;
+    margin: 20px;
+    background-color: #eee;
+    width: 900px;">
+        {% for breadcrumb in breadcrumbs %}
+            <li><a href="{{ breadcrumb.url }}" style="text-decoration: none;color: black;">{{ breadcrumb.name }}</a></li>
+            {% if not forloop.last %} > {% endif %}
+        {% endfor %}
+    </ul>
+    <div class="books-container">
+        
+        <!-- Old Testament (பழைய ஏற்பாடு) Section -->
+       
+            
+       
+        <div class="book-sectionbook">
+            
+            <h2>பழைய ஏற்பாடு</h2>
+            <div class="book-listbook">
+                {% for book_info in oldbook_with_chapters %}
+                <div class="book-itembook" onclick="toggleChapters(this, '{{ book_info.book.bookname|lower }}')">
+                    {{ book_info.book.booknametamil }}
+                </div>
+                <div class="chapter-listbook">
+                    {% for chapter in book_info.chapters %}
+                    <div class="chapterbook">
+                        <a href="{% url 'chapter_detail' book_info.book.bookname chapter %}" style="text-decoration: none;font-size: 15px;
+    font-weight: 500;">{{ chapter }}</a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- New Testament (புதிய ஏற்பாடு) Section -->
+        <div class="book-sectionbook">
+            <h2>புதிய ஏற்பாடு</h2>
+            <div class="book-listbook">
+                {% for book_info in newbook_with_chapters %}
+                <div class="book-itembook" onclick="toggleChapters(this, '{{ book_info.book.bookname|lower }}')">
+                    {{ book_info.book.booknametamil }}
+                </div>
+                <div class="chapter-listbook">
+                    {% for chapter in book_info.chapters %}
+                    <div class="chapterbook">
+                        <a href="{% url 'chapter_detail' book_info.book.bookname chapter %}" style="text-decoration: none;font-size: 15px;
+    font-weight: 500;">{{ chapter }}</a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleChapters(bookElement, bookName) {
+        const chapterList = bookElement.nextElementSibling;
+        if (chapterList.style.display === "none" || chapterList.style.display === "") {
+            chapterList.style.display = "grid";
+        } else {
+            chapterList.style.display = "none";
+        }
+    }
+</script>
+{% endblock %}

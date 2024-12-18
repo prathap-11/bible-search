@@ -1,0 +1,71 @@
+# admin.py
+from django.contrib import admin
+from import_export.admin import ImportExportModelAdmin
+from .models import BibleDb,OldTestamentBook, Chapter,NewTestamentBook,ChapterNew
+
+class BibleDbAdmin(ImportExportModelAdmin):
+    list_display = ('book', 'bookname', 'tamilname', 'chapter', 'versecount', 'verse', 'kjv')
+    search_fields = ('book', 'bookname', 'tamilname', 'chapter', 'verse')
+    list_filter = ('book', 'chapter')
+
+class OldTestamentBookAdmin(admin.ModelAdmin):
+    list_display = ('bookname','booknametamil','totalchapters')
+
+class ChapterAdmin(admin.ModelAdmin):
+    list_display = ('book', 'chapter_number')
+
+class NewTestamentBookAdmin(admin.ModelAdmin):
+    list_display = ('bookname','booknametamil','totalchapters')
+
+class ChapterNewAdmin(admin.ModelAdmin):
+    list_display = ('booknew', 'newchapter_number')
+
+
+admin.site.register(BibleDb, BibleDbAdmin)
+admin.site.register(OldTestamentBook, OldTestamentBookAdmin)
+admin.site.register(Chapter, ChapterAdmin)
+admin.site.register(NewTestamentBook, NewTestamentBookAdmin)
+admin.site.register(ChapterNew, ChapterNewAdmin)
+
+
+############################### verse of the day ################################
+from datetime import datetime, timedelta
+from django.utils.timezone import make_aware
+from .models import Verse_of_the_day,Daily_bible_reading
+
+class VerseOfTheDayAdmin(admin.ModelAdmin):
+    list_display = ('date','bookname', 'tamilname', 'chapter', 'versecount', 'verse', 'kjv')
+    search_fields = ('date','bookname', 'chapter', 'versecount')
+    list_filter = ('bookname', 'date')
+    ordering = ('date',)
+    date_hierarchy = 'date'
+
+    def get_queryset(self, request):
+        # Get the current date and the date 60 days ahead
+        today = make_aware(datetime.today())
+        end_date = today + timedelta(days=60)
+
+        # Return only the records from today to 60 days from today
+        return super().get_queryset(request).filter(date__range=[today.date(), end_date.date()])
+
+admin.site.register(Verse_of_the_day, VerseOfTheDayAdmin)
+
+########################################################
+
+class DailyBibleReading(admin.ModelAdmin):
+    list_display = ('date','bookname', 'tamilname', 'chapter')
+    search_fields = ('date','bookname', 'chapter')
+    list_filter = ('bookname', 'date')
+    ordering = ('date',)
+    date_hierarchy = 'date'
+
+    def get_queryset(self, request):
+        # Get the current date and the date 60 days ahead
+        today = make_aware(datetime.today())
+        end_date = today + timedelta(days=60)
+
+        # Return only the records from today to 60 days from today
+        return super().get_queryset(request).filter(date__range=[today.date(), end_date.date()])
+
+admin.site.register(Daily_bible_reading,DailyBibleReading)
+

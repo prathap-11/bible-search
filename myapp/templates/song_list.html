@@ -1,0 +1,288 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song List</title>
+    <style>
+        /* General Body Styling */
+        body {
+            font-family: 'Georgia', serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header Styling */
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-top: 50px;
+            font-weight: bold;
+        }
+
+        /* Container Styling */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Song List Styling */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        li {
+            width: 30%;
+            margin: 15px 0;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        li:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        a {
+            text-decoration: none;
+            color: #3498db;
+            font-size: 1.2em;
+            padding: 8px 12px;
+            display: inline-block;
+            border-radius: 4px;
+            transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        a:hover {
+            color: #fff;
+            background-color: #3498db;
+            transform: translateY(-2px);
+        }
+
+        /* Chapter Box Styling */
+        .chapter-box {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            max-height: 400px; /* Add max height if there are many chapters */
+        }
+
+        .chapter-box a {
+            font-size: 1.1em;
+            color: #2980b9;
+            padding: 8px 12px;
+            border-radius: 4px;
+            background-color: #f1f1f1;
+            display: inline-block;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+        }
+
+        .chapter-box a:hover {
+            color: #fff;
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        /* Back Link Styling */
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            text-decoration: none;
+            background-color: #16a085;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .back-link:hover {
+            background-color: #1abc9c;
+            transform: translateY(-2px);
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #34495e;
+            padding: 10px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar img {
+            height: 40px;
+        }
+
+        .navbar a {
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background-color: #1abc9c;
+        }
+
+        /* Dropdown Styling */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown .dropbtn {
+            font-size: 1.1em;
+            border: none;
+            outline: none;
+            color: white;
+            padding: 14px 16px;
+            background-color: #34495e;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #1abc9c;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #34495e;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #1abc9c;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .navbar a {
+                padding: 10px;
+                width: 100%;
+                text-align: left;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            ul {
+                flex-direction: column;
+            }
+
+            li {
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navbar Section -->
+    <div class="navbar">
+        <img src="{% static 'images/logo.png' %}" alt="Logo">
+        <a href="#">Home</a>
+        <a href="#">Tamil Bible</a>
+        <a href="#">English Bible</a>
+
+        <!-- Search Dropdown -->
+        <div class="dropdown">
+            <button class="dropbtn">Search</button>
+            <div class="dropdown-content">
+                <a href="#">Bible Devotions</a>
+                <a href="#">Bible References</a>
+                <a href="#">Bible Articles</a>
+                <a href="#">Bible Kavithaikal</a>
+                <a href="#">Bible Literature</a>
+                <a href="#">Prasanga Kurippugal</a>
+                <a href="#">Screenplays</a>
+            </div>
+        </div>
+
+        <!-- Info Dropdown -->
+        <div class="dropdown">
+            <button class="dropbtn">Info</button>
+            <div class="dropdown-content">
+                <a href="#">Our Info</a>
+                <a href="#">Editor Info</a>
+                <a href="#">Events</a>
+            </div>
+        </div>
+
+        <a href="#">Quiz</a>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="container">
+        <h1>Song List</h1>
+
+        <ul>
+            {% for song in songs %}
+                <li>
+                    <a href="{% url 'chapter_detail'  chapter.chapter chapter.versecount %}">{{ song.bookname }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        {% if chapters %}
+            <div class="chapter-box">
+             
+                {% for chapter in chapters %}
+                    <a href="{% url 'chapter_detail'  chapter.bookname chapter.versecount %}">
+                        Chapter {{ chapter.bookname }}
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <a href="/" class="back-link">Back to book name</a>
+    </div>
+
+</body>
+</html>

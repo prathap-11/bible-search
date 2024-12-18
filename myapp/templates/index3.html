@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<body>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {% for crumb in breadcrumbs %}
+                {% if forloop.last %}
+                    <li class="breadcrumb-item active" aria-current="page">{{ crumb.name }}</li>
+                {% else %}
+                    <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.name }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+    </nav>
+
+    <div class="verse-of-the-day">
+        <h3>Verse of the Day</h3>
+        <p><strong>Book:</strong> {{ daily_verse.tamilname }}</p>
+        <p><strong>Chapter:</strong> {{ daily_verse.chapter }}</p>
+        <p><strong>versecount:</strong> {{ daily_verse.versecount }}</p>
+        <p><strong>Verse:</strong> {{ daily_verse.verse }}</p>
+        <p><strong>KJV Translation:</strong> {{ daily_verse.kjv }}</p>
+    </div>
+    <div class="verse-of-the-day">
+        <h3>Bible Reading</h3>
+        <p><strong>Book:</strong> {{ daily_verse.tamilname }}</p>
+        <p><strong>Book:</strong> {{ daily_verse.bookname }}</p>
+        <p><strong>Chapter:</strong> {{ daily_verse.chapter }}</p>
+        
+    </div>
+</body>
+{% endblock %}
+
+
+<!-- { extends 'base.html' }
+{ load static }
+{ block content }
+
+<body>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        {% for crumb in breadcrumbs %}
+            {% if forloop.last %}
+                <li class="breadcrumb-item active" aria-current="page">{{ crumb.name }}</li>
+            {% else %}
+                <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.name }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ol>
+</nav>
+
+</body>
+
+{ endblock } -->
