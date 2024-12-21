@@ -70,6 +70,23 @@
                 <p><strong>{{ daily_verse.verse }}</strong> </p><br>
                 <p><strong>{{ daily_verse.kjv }}</strong> </p>
             </p>
+
+            <div class="container">
+                <h1>Author Cermons</h1>
+                <ul>
+                    {% for cermon in cermons %}
+                        <li>
+                            <h2>{{ cermon.title }}</h2>
+                            <p><strong>Author:</strong> {{ cermon.author.add_author }}</p>
+                            <p><strong>Message:</strong> {{ cermon.tamil_bible_message|safe }}</p>
+                            <p><a href="{% url 'cermon_detail' cermon.url %}" target="_blank">Read more</a></p>
+                        </li>
+                    {% empty %}
+                        <li>No cermons available.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
         </div>
         
         

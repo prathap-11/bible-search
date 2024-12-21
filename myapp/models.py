@@ -75,26 +75,45 @@ class Daily_bible_reading(models.Model):
 from django.db import models
 #from ckeditor.fields import RichTextField  # Importing RichTextField from ckeditor
 
+# class TaxonomyBibleStudy(models.Model):
+#     add_taxonomy = models.CharField(max_length=200)
+#     add_author = models.CharField(max_length=100)
+
+#     def __str__(self):
+#         # For displaying `add_author` in the `author` dropdown and `add_taxonomy` in the `select_tag` dropdown
+#         return f"{self.add_author} - {self.add_taxonomy}"
+
+from django.db import models
+from ckeditor.fields import RichTextField  # Ensure you have CKEditor installed if using RichTextField
+
 class TaxonomyBibleStudy(models.Model):
     add_taxonomy = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.add_taxonomy
+
+
+class Author(models.Model):
     add_author = models.CharField(max_length=100)
 
     def __str__(self):
-        # For displaying `add_author` in the `author` dropdown and `add_taxonomy` in the `select_tag` dropdown
-        return f"{self.add_author} - {self.add_taxonomy}"
+        return self.add_author
 
 
-class BibleReferences(models.Model):
+class AuthorCermon(models.Model):
     title = models.CharField(max_length=100)
-    url = models.URLField()
-    author = models.ForeignKey(TaxonomyBibleStudy, on_delete=models.CASCADE, related_name='bible_references')
+    url = models.CharField(max_length=100)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='bible_references')
     select_tag = models.ForeignKey(TaxonomyBibleStudy, on_delete=models.CASCADE, related_name='selected_tags')
-    select_book = models.CharField(max_length=100)
-    chapter = models.IntegerField()
-    #tamil_bible_message = RichTextField()  # Correctly using RichTextField
+    # select_book = models.CharField(max_length=100)
+    # bookname=models.CharField(max_length=100)
+    # chapter = models.IntegerField()
+    # Uncomment the following line if you want to use RichTextField
+    tamil_bible_message = RichTextField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.author.add_author} title-{self.title}"
+        return f"{self.author.add_author} - Title: {self.title}"
+
 
 ###################################################
 

@@ -1,38 +1,56 @@
 # admin.py
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from .models import BibleDb,OldTestamentBook, Chapter,NewTestamentBook,ChapterNew,TaxonomyBibleStudy,BibleReferences
+from .models import BibleDb,OldTestamentBook, Chapter,NewTestamentBook,ChapterNew,TaxonomyBibleStudy #,AuthorCermon
 
 # from django.contrib import admin
-# from .models import BibleReferences, TaxonomyBibleStudy
+# from .models import AuthorCermon, TaxonomyBibleStudy
 
 # from django.contrib import admin
-# from .models import BibleReferences, TaxonomyBibleStudy
-
+# from .models import AuthorCermon, TaxonomyBibleStudy
+#########################################################################
 # from django.contrib import admin
-# from .models import BibleReferences, TaxonomyBibleStudy
+# from .models import AuthorCermon, TaxonomyBibleStudy
 
-class BibleReferencesAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'select_tag', 'select_book', 'chapter')
+# class AuthorCermonAdmin(admin.ModelAdmin):
+#     list_display = ('title', 'author', 'select_tag', 'select_book', 'chapter')
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        """
-        Modify the queryset for ForeignKey fields (author and select_tag) to show relevant values.
-        """
-        if db_field.name == "author":
-            # Only show `add_author` in the `author` dropdown
-            kwargs["queryset"] = TaxonomyBibleStudy.objects.all()
-            # Ensure that only add_author is shown in the admin for `author`
-            # kwargs["widget"] = admin.widgets.FilteredSelectMultiple("author", False)
-        elif db_field.name == "select_tag":
-            # Only show `add_taxonomy` in the `select_tag` dropdown
-            kwargs["queryset"] = TaxonomyBibleStudy.objects.all()
-            # Ensure that only add_taxonomy is shown in the admin for `select_tag`
-            # kwargs["widget"] = admin.widgets.FilteredSelectMultiple("select_tag", False)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+#     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+#         """
+#         Modify the queryset for ForeignKey fields (author and select_tag) to show relevant values.
+#         """
+#         if db_field.name == "author":
+#             # Only show `add_author` in the `author` dropdown
+#             kwargs["queryset"] = TaxonomyBibleStudy.objects.all()
+#             # Ensure that only add_author is shown in the admin for `author`
+#             # kwargs["widget"] = admin.widgets.FilteredSelectMultiple("author", False)
+#         elif db_field.name == "select_tag":
+#             # Only show `add_taxonomy` in the `select_tag` dropdown
+#             kwargs["queryset"] = TaxonomyBibleStudy.objects.all()
+#             # Ensure that only add_taxonomy is shown in the admin for `select_tag`
+#             # kwargs["widget"] = admin.widgets.FilteredSelectMultiple("select_tag", False)
+#         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-admin.site.register(BibleReferences, BibleReferencesAdmin)
+# admin.site.register(AuthorCermon, AuthorCermonAdmin)
+###############################################################
+from .models import TaxonomyBibleStudy,Author,AuthorCermon
 
+class TaxonomyBibleStudyAdmin(admin.ModelAdmin):
+    list_display=('add_taxonomy',)
+    search_fields=('add_taxonomy',)
+
+class AuthorAdmin(admin.ModelAdmin):
+    list_display=('add_author',)
+    search_fields=('add_author',)
+
+admin.site.register(TaxonomyBibleStudy,TaxonomyBibleStudyAdmin)
+admin.site.register(Author, AuthorAdmin)
+
+class AuthorCermonAdmin(admin.ModelAdmin):
+    list_display=('title','author',)
+    search_fields=('title','author',)
+
+admin.site.register(AuthorCermon,AuthorCermonAdmin)
 
 
 
@@ -60,17 +78,17 @@ class BibleDbAdmin(ImportExportModelAdmin):
     search_fields = ('book', 'bookname', 'tamilname', 'chapter', 'verse')
     list_filter = ('book', 'chapter')
 
-class TaxonomyBibleStudyAdmin(admin.ModelAdmin):
-    list_display = ('add_taxonomy', 'add_author')
-    search_fields = ('add_taxonomy', 'add_author')
+# class TaxonomyBibleStudyAdmin(admin.ModelAdmin):
+#     list_display = ('add_taxonomy', 'add_author')
+#     search_fields = ('add_taxonomy', 'add_author')
 
-admin.site.register(TaxonomyBibleStudy, TaxonomyBibleStudyAdmin)
+# admin.site.register(TaxonomyBibleStudy, TaxonomyBibleStudyAdmin)
 
-# class BibleReferencesAdmin(admin.ModelAdmin):
+# class AuthorCermonAdmin(admin.ModelAdmin):
 #     list_display = ('title', 'url','author','select_tag','select_book','chapter',)#'tamil_bible_message')
 #     search_fields = ('title', 'select_book','chapter')
 
-# admin.site.register(BibleReferences, BibleReferencesAdmin)
+# admin.site.register(AuthorCermon, AuthorCermonAdmin)
 
 
 

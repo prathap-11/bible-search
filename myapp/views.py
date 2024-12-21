@@ -457,6 +457,9 @@ def base_english(request):
 from datetime import date
 from django.shortcuts import render
 from .models import Daily_bible_reading,Verse_of_the_day,dailyverse_day
+from django.shortcuts import render, get_object_or_404
+from .models import AuthorCermon
+
 
 def index(request):
     # Fetch distinct book names from the database
@@ -478,6 +481,8 @@ def index(request):
     daily_verse=Verse_of_the_day.objects.get(date=today)
     bible_reading=Daily_bible_reading.objects.get(date=today)
     # daily_verse = dailyverse_day.objects.get(date=today)
+
+    cermons=AuthorCermon.objects.all()
 
     # Handling POST request (Search form submission)
     if request.method == "POST":
@@ -511,6 +516,7 @@ def index(request):
             'books': books,
             'daily_verse': daily_verse,
             'bible_reading': bible_reading,
+            'cermons': cermons,
         })
 
 
@@ -522,7 +528,8 @@ def index(request):
         'books': books,
         'daily_verse': daily_verse,
         'breadcrumbs': [
-            {'name': 'Home', 'url': '/'}]
+            {'name': 'Home', 'url': '/'}],
+        'cermons': cermons
     })
 
 
@@ -1416,6 +1423,204 @@ def verse_detail_english(request, bookname, chapter, versecount):
 #         'daily_verse': daily_verse,
 #     })
 
-####################### daily verse old
+####################### bible reference
 
+# from django.shortcuts import render, get_object_or_404
+# from .models import AuthorCermon
 
+# def cermon_view(request, url):
+#     # Use get_object_or_404 to fetch the BibleReferences object by its URL
+#     cermon = get_object_or_404(AuthorCermon, url=url)
+    
+#     # Pass the `cermon` object to the template
+#     return render(request, 'cermon.html', {'cermon': cermon})
+
+#################################
+# from django.shortcuts import render, get_object_or_404
+# from .models import AuthorCermon
+
+# def cermon_view(request, url):
+#     # Use get_object_or_404 to fetch the AuthorCermon object by its URL
+#     cermon = get_object_or_404(AuthorCermon, url=url)
+    
+#     # Extract bookname, chapter, and versecount from tamil_bible_message
+#     # Assuming tamil_bible_message is in the format "BookName Chapter:VerseCount"
+#     if cermon.tamil_bible_message:
+#         parts = cermon.tamil_bible_message.split()
+#         bookname = parts[0]  # Assuming first part is the book name
+#         chapter_and_verse = parts[1].split(':')  # Split at ':'
+#         chapter = chapter_and_verse[0]  # Chapter number
+#         versecount = chapter_and_verse[1] if len(chapter_and_verse) > 1 else '1'  # Verse count
+
+#         # Construct the URL for the verse detail page
+#         verse_detail_url = f"/tamil/{bookname}/{chapter}/{versecount}/"
+#     else:
+#         verse_detail_url = "#"
+
+#     # Pass the cermon object and constructed URL to the template
+#     return render(request, 'cermon.html', {'cermon': cermon, 'verse_detail_url': verse_detail_url})
+
+# ################################ cermon view with tamilbiblemessage
+# from django.shortcuts import render, get_object_or_404
+# from .models import AuthorCermon
+
+# def cermon_view(request, url):
+#     # Use get_object_or_404 to fetch the AuthorCermon object by its URL
+#     cermon = get_object_or_404(AuthorCermon, url=url)
+    
+#     # Extract bookname, chapter, and versecount from tamil_bible_message
+#     bookname = chapter = versecount = None  # Default values in case there's no tamil_bible_message
+
+#     if cermon.tamil_bible_message:
+#         parts = cermon.tamil_bible_message.split()
+#         bookname = parts[0]  # Assuming first part is the book name
+#         chapter_and_verse = parts[1].split(':')  # Split at ':'
+#         chapter = chapter_and_verse[0]  # Chapter number
+#         versecount = chapter_and_verse[1] if len(chapter_and_verse) > 1 else '1'  # Verse count
+
+#     # Construct the URL for the verse detail page
+#     verse_detail_url = f"/tamil/{bookname}/{chapter}/{versecount}/" if bookname and chapter and versecount else "#"
+
+#     # Pass the cermon object and constructed URL to the template
+#     return render(request, 'cermon.html', {'cermon': cermon, 'verse_detail_url': verse_detail_url})
+ #######################
+
+# import re
+# from django.shortcuts import render, get_object_or_404
+# from .models import AuthorCermon
+
+# def cermon_view(request, url):
+#     # Use get_object_or_404 to fetch the AuthorCermon object by its URL
+#     cermon = get_object_or_404(AuthorCermon, url=url)
+    
+#     # Initialize a list to store multiple verse detail URLs
+#     verse_detail_urls = []
+
+#     # Check if tamil_bible_message is not empty
+#     if cermon.tamil_bible_message:
+#         # Use regex to find all occurrences of (Bookname Chapter:VerseCount)
+#         matches = re.findall(r'([^\d\s\(]+)\s(\d+):(\d+)', cermon.tamil_bible_message)
+
+#         # For each match, construct a URL and add it to the list
+#         for match in matches:
+#             bookname, chapter, versecount = match
+#             verse_detail_url = f"/tamil/{bookname}/{chapter}/{versecount}/"
+#             verse_detail_urls.append(verse_detail_url)
+
+#     # Pass the cermon object and the list of verse detail URLs to the template
+#     return render(request, 'cermon.html', {'cermon': cermon, 'verse_detail_urls': verse_detail_urls})
+
+#####################################
+
+# import re
+# from django.shortcuts import render, get_object_or_404
+# from .models import AuthorCermon
+
+# def cermon_view(request, url):
+#     # Use get_object_or_404 to fetch the AuthorCermon object by its URL
+#     cermon = get_object_or_404(AuthorCermon, url=url)
+    
+#     # Initialize a list to store the (bookname, chapter, versecount) for each match
+#     verse_matches = []
+
+#     # Check if tamil_bible_message is not empty
+#     if cermon.tamil_bible_message:
+#         # Use regex to find all occurrences of (Bookname Chapter:VerseCount)
+#         matches = re.findall(r'([^\d\s\(]+)\s(\d+):(\d+)', cermon.tamil_bible_message)
+
+#         # For each match, create a tuple (bookname, chapter, versecount)
+#         for match in matches:
+#             bookname, chapter, versecount = match
+#             # Construct the verse detail URL for each match
+#             verse_detail_url = f"/tamil/{bookname}/{chapter}/{versecount}/"
+#             verse_matches.append((match, verse_detail_url))
+
+#     # Pass the cermon object and the list of verse_matches to the template
+#     return render(request, 'cermon.html', {'cermon': cermon, 'verse_matches': verse_matches})
+
+#####################################
+
+# import re
+# from django.shortcuts import render, get_object_or_404
+# from .models import AuthorCermon
+
+# def cermon_view(request, url):
+#     # Use get_object_or_404 to fetch the AuthorCermon object by its URL
+#     cermon = get_object_or_404(AuthorCermon, url=url)
+    
+#     # Initialize a list to store the (bookname, chapter, versecount) for each match
+#     verse_matches = []
+
+#     # Check if tamil_bible_message is not empty
+#     if cermon.tamil_bible_message:
+#         # Use regex to find all occurrences of (Bookname Chapter:VerseCount)
+#         matches = re.findall(r'([^\d\s\(]+)\s(\d+):(\d+)', cermon.tamil_bible_message)
+
+#         # For each match, create a tuple (bookname, chapter, versecount)
+#         for match in matches:
+#             bookname, chapter, versecount = match
+#             # Construct the verse detail URL for each match
+#             verse_detail_url = f"/tamil/{bookname}/{chapter}/{versecount}/"
+#             verse_matches.append((match, verse_detail_url))
+
+#         # Replace all occurrences of bookname chapter:verse with a link
+#         modified_message = cermon.tamil_bible_message
+#         for match, url in verse_matches:
+#             verse_reference = f"{match[0]} {match[1]}:{match[2]}"  # Combine bookname, chapter, and verse
+#             link = f'<a href="{url}" target="_blank">{verse_reference}</a>'
+#             modified_message = modified_message.replace(verse_reference, link)
+
+#     else:
+#         modified_message = ""
+
+#     # Pass the cermon object and modified message to the template
+#     return render(request, 'cermon.html', {'cermon': cermon, 'modified_message': modified_message})
+
+##########################
+
+import re
+from django.shortcuts import render, get_object_or_404
+from .models import AuthorCermon, BibleDb
+
+def cermon_view(request, url):
+    # Use get_object_or_404 to fetch the AuthorCermon object by its URL
+    cermon = get_object_or_404(AuthorCermon, url=url)
+    
+    # Initialize a list to store the (bookname, chapter, versecount) for each match
+    verse_matches = []
+
+    # Check if tamil_bible_message is not empty
+    if cermon.tamil_bible_message:
+        # Use regex to find all occurrences of (Bookname Chapter:VerseCount)
+        matches = re.findall(r'([^\d\s\(]+)\s(\d+):(\d+)', cermon.tamil_bible_message)
+
+        # For each match, create a tuple (bookname, chapter, versecount)
+        for match in matches:
+            tamil_bookname, chapter, versecount = match
+
+            # Now, look up the corresponding English book name from BibleDb based on tamilname
+            bible_entry = BibleDb.objects.filter(tamilname=tamil_bookname).first()
+            print('bible entryyyyyy',bible_entry)
+
+            if bible_entry:
+                english_bookname = bible_entry.book.lower()  # Use the English name of the book and convert it to lowercase
+                # Construct the verse detail URL using the English book name
+                verse_detail_url = f"/tamil/{english_bookname}/{chapter}/{versecount}"
+            else:
+                # If no match is found, use the tamil name as fallback
+                verse_detail_url = f"/tamil/{tamil_bookname}/{chapter}/{versecount}"
+
+            verse_matches.append((match, verse_detail_url))
+
+        # Replace all occurrences of bookname chapter:verse with a link
+        modified_message = cermon.tamil_bible_message
+        for match, url in verse_matches:
+            verse_reference = f"{match[0]} {match[1]}:{match[2]}"  # Combine bookname, chapter, and verse
+            link = f'<a href="{url}" target="_blank">{verse_reference}</a>'
+            modified_message = modified_message.replace(verse_reference, link)
+
+    else:
+        modified_message = ""
+
+    # Pass the cermon object and modified message to the template
+    return render(request, 'cermon.html', {'cermon': cermon, 'modified_message': modified_message})

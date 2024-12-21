@@ -39,6 +39,10 @@ path('english/<str:bookname>/<str:chapter>/', views.chapter_detail_english, name
 path('english/<str:bookname>/<str:chapter>/<str:versecount>',views.verse_detail_english,name='verse_detail_english'),
 path('englishtamil/<str:bookname>/<str:chapter>/<str:versecount>',views.verse_detail3,name='verse_detail3'),
 path('get-chapters/<str:bookname>/', views.get_chapters, name='get_chapters'),  # API for fetching chapters
+# path('cermon/',views.cermon_view,name='cermon'),
+# Add a dynamic URL for BibleReferences
+path('tamil-bible-message/<str:url>/', views.cermon_view, name='cermon_detail'),
+
 
 
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
