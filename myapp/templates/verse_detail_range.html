@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<head>
+    <style>
+        /* General Layout */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fb;
+            margin: 0;
+            padding: 0;
+        }
+        @keyframes rollRibbon {
+                0% {
+                    left: -100%;
+                }
+                100% {
+                    left: 100%;
+                }
+            }
+
+          
+    .verse-of-the-day:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .verse-of-the-day h1:hover {
+        color: #4CAF50;
+    }
+
+    .verse-of-the-day p:hover {
+        color: #333;
+    }
+
+    .verse-of-the-day .icon:hover {
+        color: #333;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {% for crumb in breadcrumbs %}
+                    {% if forloop.last %}
+                        <li class="breadcrumb-item active" aria-current="page">{{ crumb.name }}</li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.name }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
+        </nav> -->
+        
+
+        <div class="container">
+            <h1>{{ bookname }} {{ chapter }}:{{ startverse }}-{{ endverse }}</h1>
+    <div>
+        {% if verses %}
+            <div>
+                {% for verse in verses %}
+                    <div class="verse-container">
+                        <span class="verse-number">{{ verse.versecount }}:</span>
+                        <span class="verse-text">{{ verse.verse }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No verses found for this range.</p>
+        {% endif %}
+    </div>
+        </div>
+        
+        
+</body>
+
+{% endblock %}

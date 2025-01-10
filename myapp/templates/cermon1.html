@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<head>
+    <style>
+        /* General Layout */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fb;
+            margin: 0;
+            padding: 0;
+        }
+        @keyframes rollRibbon {
+                0% {
+                    left: -100%;
+                }
+                100% {
+                    left: 100%;
+                }
+            }
+
+          
+    .verse-of-the-day:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .verse-of-the-day h1:hover {
+        color: #4CAF50;
+    }
+
+    .verse-of-the-day p:hover {
+        color: #333;
+    }
+
+    .verse-of-the-day .icon:hover {
+        color: #333;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {% for crumb in breadcrumbs %}
+                    {% if forloop.last %}
+                        <li class="breadcrumb-item active" aria-current="page">{{ crumb.name }}</li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.name }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
+        </nav> -->
+        
+
+        <div class="container">
+            <div class="verse-of-the-day" style="background-color: #fff; border-left: 5px solid #4CAF50; padding: 30px; margin: 20px 0; font-family: 'Arial', sans-serif; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; border-radius: 8px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <h1 style="font-size: 28px; color: #333; margin-bottom: 15px; font-weight: bold; text-align: center; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s ease;">
+                    {{ cermon.title }}
+                </h1>
+                <p style="font-size: 20px; color: #555; line-height: 1.8; font-weight: 700; text-align: center; transition: color 0.3s ease;">
+                    <p>
+                        <strong>{{ modified_message|safe }}</strong>
+                    </p><br>
+                    <p><strong>{{ cermon.author.add_author }}</strong></p><br>
+                </p>
+                <p><a href="{% url 'cermon_detail' cermon.url %}" >Read more</a></p>
+                <!-- target="_blank" -->
+            </div>
+        </div>
+        
+        
+</body>
+
+{% endblock %}

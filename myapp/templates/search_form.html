@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tamilbiblesearch</title>
+    <style>
+        /* General Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* height: 100vh; */
+            min-height: 100px;
+            padding: 20px;
+        }
+
+        /* Form Styling */
+        form {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* Select Dropdown */
+        select {
+            background-color: black;
+            color: white;
+            padding: 10px;
+            border-radius: 22px;
+            border: 2px solid white;
+            font-size: 16px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        select:focus {
+            background-color: #333;
+            border-color: #00bcd4;
+            outline: none;
+        }
+
+        /* Input Fields for Chapter and Verse */
+        input[type="text"] {
+            background-color: white;
+            border-radius: 16px;
+            border: 2px solid #ddd;
+            padding: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        input[type="text"]:focus {
+            border-color: #00bcd4;
+            box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+            outline: none;
+        }
+
+        /* Form Row (Chapter and Verse) */
+        .d-flex {
+            gap: 20px;
+        }
+
+        /* Submit Button */
+        .btn {
+            width: 100%;
+            background-color: black;
+            color: white;
+            border-radius: 16px;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #00bcd4;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .btn:focus {
+            outline: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .col-12 {
+                width: 100% !important;
+            }
+
+            .d-flex {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .btn {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- search_form.html -->
+    <div class="container">
+        <form method="GET" action="{% url 'verse_present' %}" class="row g-3 justify-content-center" target="blank">
+            <!-- Book Dropdown -->
+            <div class="col-12 col-md-3">
+                <select id="book" name="book" class="form-select" required onchange="fetchChapters()">
+                    <option value="" disabled selected>Select a Book</option>
+                    {% for book in books %}
+                    <option value="{{ book.tamilname }}" {% if book.tamilname == request.GET.book %}selected{% endif %}>
+                        {{ book.tamilname }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Chapter Dropdown (Dynamic) -->
+            <div class="col-12 col-md-4 d-flex gap-2">
+                <select id="chapter" name="chapter" class="form-select" required onchange="fetchVerseCounts()">
+                    <option value="" disabled selected>Select Chapter</option>
+                    <!-- Chapters will be populated by AJAX -->
+                </select>
+            </div>
+
+            <!-- Versecount Dropdown (Dynamic) -->
+            <div class="col-12 col-md-4 d-flex gap-2">
+                <select id="versecount" name="versecount" class="form-select" required>
+                    <option value="" disabled selected>Select Verse</option>
+                    <!-- Versecounts will be populated by AJAX -->
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="col-12 col-md-2">
+                <button type="submit" class="btn">Search</button>
+            </div>
+        </form>
+
+        <div id="verses-container" class="row mb-2">
+            <div class="col-6">
+                <a href="/verse_present/?book=Genesis&chapter=1&versecount=1" class="verse-link">
+                    Tamil Verse 1: In the beginning God created the heaven and the earth.
+                </a>
+            </div>
+            <div class="col-6">
+                <a href="/verse_present/?book=Genesis&chapter=1&versecount=1" class="verse-link">
+                    KJV Verse 1: In the beginning God created the heaven and the earth.
+                </a>
+            </div>
+        </div>
+        
+        <!-- verse and kjv display -->
+
+        <!-- Verse Content Display -->
+        <!-- <div id="verses-container" class="col-12 mt-4">
+            Dynamic Verse Content will appear here
+        </div> -->
+
+        
+        
+
+    </div>
+
+    <!-- JavaScript to handle dynamic population -->
+    <!-- <script>
+    // Fetch chapters based on the selected book
+    function fetchChapters() {
+        const book = document.getElementById('book').value;
+        const chapterSelect = document.getElementById('chapter');
+        chapterSelect.innerHTML = '<option value="" disabled selected>Select Chapter</option>'; // Clear previous options
+
+        if (book) {
+            fetch(`/get-chapters/${book}/`)
+                .then(response => response.json())
+                .then(data => {
+                    data.chapters.forEach(chapter => {
+                        const option = document.createElement('option');
+                        option.value = chapter;
+                        option.innerText = chapter;
+                        chapterSelect.appendChild(option);
+                    });
+                });
+        }
+    }
+
+    // Fetch versecounts based on the selected chapter
+    function fetchVerseCounts() {
+        const book = document.getElementById('book').value;
+        const chapter = document.getElementById('chapter').value;
+        const verseSelect = document.getElementById('versecount');
+        verseSelect.innerHTML = '<option value="" disabled selected>Select Verse</option>'; // Clear previous options
+
+        if (book && chapter) {
+            fetch(`/get-versecounts/${book}/${chapter}/`)
+                .then(response => response.json())
+                .then(data => {
+                    data.versecounts.forEach(versecount => {
+                        const option = document.createElement('option');
+                        option.value = versecount;
+                        option.innerText = versecount;
+                        verseSelect.appendChild(option);
+                    });
+                });
+        }
+    }
+</script> -->
+
+    <!-- ############### -->
+    <!-- JavaScript to handle dynamic population -->
+    <!-- <script>
+        // Fetch chapters based on the selected book
+        function fetchChapters() {
+            const book = document.getElementById('book').value;
+            const chapterSelect = document.getElementById('chapter');
+            chapterSelect.innerHTML = '<option value="" disabled selected>Select Chapter</option>'; // Clear previous options
+
+            if (book) {
+                fetch(`/get-chapters/${book}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.chapters.forEach(chapter => {
+                            const option = document.createElement('option');
+                            option.value = chapter;
+                            option.innerText = chapter;
+                            chapterSelect.appendChild(option);
+                        });
+                    });
+            }
+        }
+
+        // Fetch versecounts along with verse and kjv based on the selected chapter
+        function fetchVerseCounts() {
+            const book = document.getElementById('book').value;
+            const chapter = document.getElementById('chapter').value;
+            const verseSelect = document.getElementById('versecount');
+            const versesContainer = document.getElementById('verses-container');
+            verseSelect.innerHTML = '<option value="" disabled selected>Select Verse</option>'; // Clear previous options
+            versesContainer.innerHTML = ''; // Clear previous verses content
+
+            if (book && chapter) {
+                fetch(`/get-versecounts/${book}/${chapter}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.versecounts.forEach(item => {
+                            const option = document.createElement('option');
+                            option.value = item.versecount;
+                            option.innerText = ` ${item.versecount}`;
+                            verseSelect.appendChild(option);
+
+                            // Create a container for verse content
+                            const verseContent = document.createElement('div');
+                            verseContent.classList.add('verse-content');
+                            verseContent.innerHTML = `
+                            <h4>Verse ${item.versecount}</h4>
+                            <p><strong>Verse:</strong> ${item.verse}</p>
+                            <p><strong>KJV:</strong> ${item.kjv}</p>
+                        `;
+                            versesContainer.appendChild(verseContent);
+                        });
+                    });
+            }
+        }
+    </script> -->
+
+    <!-- javascript 10-01-2024 -->
+    <script>
+        // Fetch chapters based on the selected book
+        function fetchChapters() {
+            const book = document.getElementById('book').value;
+            const chapterSelect = document.getElementById('chapter');
+            chapterSelect.innerHTML = '<option value="" disabled selected>Select Chapter</option>'; // Clear previous options
+
+            if (book) {
+                fetch(`/get-chapters/${book}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.chapters.forEach(chapter => {
+                            const option = document.createElement('option');
+                            option.value = chapter;
+                            option.innerText = chapter;
+                            chapterSelect.appendChild(option);
+                        });
+                    });
+            }
+        }
+
+        // ####################### seperate kjv and tamil verse seperate colomn
+
+function fetchVerseCounts() {
+    const book = document.getElementById('book').value;
+    const chapter = document.getElementById('chapter').value;
+    const verseSelect = document.getElementById('versecount');
+    const versesContainer = document.getElementById('verses-container');
+
+    verseSelect.innerHTML = '<option value="" disabled selected>Select Verse</option>'; // Clear previous options
+    versesContainer.innerHTML = ''; // Clear previous verses content
+
+    if (book && chapter) {
+        fetch(`/get-versecounts/${book}/${chapter}/`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched versecounts:', data.versecounts);
+
+                if (data.versecounts.length > 0) {
+                    // Create two separate divs for Tamil and KJV verses
+                    const tamilColumn = document.createElement('div');
+                    tamilColumn.classList.add('col-6');
+
+                    const kjvColumn = document.createElement('div');
+                    kjvColumn.classList.add('col-6');
+
+                    // Loop through verses and populate Tamil and KJV columns
+                    data.versecounts.forEach(item => {
+                        
+                        // Create an option in the versecount dropdown
+                        const option = document.createElement('option');
+                        option.value = item.versecount;
+                        option.innerText = `${item.versecount}`;
+                        verseSelect.appendChild(option);
+
+                        const tamilVerseLink = document.createElement('a');
+                        tamilVerseLink.href = `/verse_present/?book=${book}&chapter=${chapter}&versecount=${item.versecount}`;
+                        tamilVerseLink.target = 'blank';
+                        tamilVerseLink.innerText = `Tamil Verse ${item.versecount}: ${item.verse}`;
+                        tamilVerseLink.classList.add('verse-link');
+                        tamilColumn.appendChild(tamilVerseLink);
+                        // Append <br> after Tamil verse
+                        tamilColumn.appendChild(document.createElement('br'));
+
+                        const kjvVerseLink = document.createElement('a');
+                        kjvVerseLink.href = `/verse_present/?book=${book}&chapter=${chapter}&versecount=${item.versecount}`;
+                        kjvVerseLink.target = 'blank';
+                        kjvVerseLink.innerText = `KJV Verse ${item.versecount}: ${item.kjv}`;
+                        kjvVerseLink.classList.add('verse-link');
+                        kjvColumn.appendChild(kjvVerseLink);
+                        // Append <br> after KJV verse
+                        kjvColumn.appendChild(document.createElement('br'));
+                    });
+
+                    // Create a row container and append the columns
+                    const verseRow = document.createElement('div');
+                    verseRow.classList.add('row', 'mb-2');
+
+                    verseRow.appendChild(tamilColumn);
+                    verseRow.appendChild(kjvColumn);
+
+                    // Append the row to the main verses container
+                    versesContainer.appendChild(verseRow);
+                } else {
+                    versesContainer.innerHTML = '<p>No verses found for this chapter.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching verses:', error);
+            });
+    }
+}
+</script>
+
+
+ <!-- <script>
+        Fetch all verses for the selected chapter
+        function fetchVerseCounts() {
+            const book = document.getElementById('book').value;
+            const chapter = document.getElementById('chapter').value;
+            const verseSelect = document.getElementById('versecount');
+            const versesContainer = document.getElementById('verses-container');
+
+            verseSelect.innerHTML = '<option value="" disabled selected>Select Verse</option>'; // Clear previous options
+            versesContainer.innerHTML = ''; // Clear previous verses content
+            console.log('versesContaineroutsideloop',versesContainer)
+
+            if (book && chapter) {
+                fetch(`/get-versecounts/${book}/${chapter}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Log the versecounts to the console for debugging
+                        console.log('Fetched versecounts:', data.versecounts);
+                        // Dynamically populate the verse dropdown and verse content
+                        if (data.versecounts.length > 0) {
+                            // Loop through verses and populate dropdown and verse content
+                            data.versecounts.forEach(item => {                            
+                                // Create an option in the versecount dropdown
+                                
+                                const option = document.createElement('option');
+                                option.value = item.versecount;
+                                option.innerText = `${item.versecount}`;
+                                verseSelect.appendChild(option);
+
+                                // Create a container for each verse's content
+                                const verseContent = document.createElement('div');
+                                verseContent.classList.add('verse-content');
+                                verseContent.innerHTML = `
+                                    <h4>Verse ${item.versecount}</h4>
+                                    <p><strong>Verse:</strong> ${item.verse}</p>
+                                    <p><strong>KJV:</strong> ${item.kjv}</p>
+                                `;
+                                versesContainer.appendChild(verseContent);
+                                console.log('versescontainer:--',versesContainer);
+                            });
+                        } else {
+                            // If no verses are found, show a message
+                            versesContainer.innerHTML = '<p>No verses found for this chapter.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching verses:', error);
+                    });
+            }
+        }
+
+        ######################## javascript with hyperlink
+        function fetchVerseCounts() {
+    const book = document.getElementById('book').value;
+    const chapter = document.getElementById('chapter').value;
+    const verseSelect = document.getElementById('versecount');
+    const versesContainer = document.getElementById('verses-container');
+
+    // Clear previous options and content first
+    verseSelect.innerHTML = '<option value="" disabled selected>Select Verse</option>'; // Clear previous options
+    versesContainer.innerHTML = ''; // Clear previous verses content
+    console.log('versesContainer outside loop:', versesContainer);
+
+    if (book && chapter) {
+        fetch(`/get-versecounts/${book}/${chapter}/`)
+            .then(response => response.json())
+            .then(data => {
+                // Log the versecounts to the console for debugging
+                console.log('Fetched versecounts:', data.versecounts);
+                
+                // Dynamically populate the verse dropdown and verse content
+                if (data.versecounts.length > 0) {
+                    // Loop through verses and populate dropdown and verse content
+                    data.versecounts.forEach(item => {                            
+                        // Create an option in the versecount dropdown
+                        const option = document.createElement('option');
+                        option.value = item.versecount;
+                        option.innerText = `${item.versecount}`;
+                        verseSelect.appendChild(option);
+
+                        // Create a container for each verse's content
+                        const verseContent = document.createElement('div');
+                        verseContent.classList.add('verse-content');
+                        
+                        // Create the hyperlink for each verse
+                        const verseLink = document.createElement('a');
+                        verseLink.href = `/verse_present/?book=${book}&chapter=${chapter}&versecount=${item.versecount}`;
+                        verseLink.target = 'blank';
+                        verseLink.innerText = `Verse ${item.versecount}: ${item.verse} - ${item.kjv}`;
+                        verseLink.classList.add('verse-link');  // Optional: Add a class for styling
+
+                        // Append the link to the verse content div
+                        verseContent.appendChild(verseLink);
+
+                        // Append the verse content to the container
+                        versesContainer.appendChild(verseContent);
+                        console.log('versesContainer inside loop:', versesContainer);
+                    });
+                } else {
+                    // If no verses are found, show a message
+                    versesContainer.innerHTML = '<p>No verses found for this chapter.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching verses:', error);
+            });
+    }
+}
+
+
+#####################script for seperate tamil and kjv
+
+function fetchVerseCounts() {
+    const book = document.getElementById('book').value;
+    const chapter = document.getElementById('chapter').value;
+    const verseSelect = document.getElementById('versecount');
+    const versesContainer = document.getElementById('verses-container');
+
+    // Clear previous options and content first
+    verseSelect.innerHTML = '<option value="" disabled selected>Select Verse</option>'; // Clear previous options
+    versesContainer.innerHTML = ''; // Clear previous verses content
+
+    if (book && chapter) {
+        fetch(`/get-versecounts/${book}/${chapter}/`)
+            .then(response => response.json())
+            .then(data => {
+                // Log the versecounts to the console for debugging
+                console.log('Fetched versecounts:', data.versecounts);
+
+                // Dynamically populate the verse dropdown and verse content
+                if (data.versecounts.length > 0) {
+                    // Loop through verses and populate dropdown and verse content
+                    data.versecounts.forEach(item => {
+                        // Create an option in the versecount dropdown
+                        const option = document.createElement('option');
+                        option.value = item.versecount;
+                        option.innerText = `${item.versecount}`;
+                        verseSelect.appendChild(option);
+
+                        // Create a row container for each verse (both Tamil and KJV)
+                        const verseRow = document.createElement('div');
+                        verseRow.classList.add('row', 'mb-2'); // Add 'row' class to create a new row
+
+                        // Create a container for the Tamil verse (in one column)
+                        const tamilVerseDiv = document.createElement('div');
+                        tamilVerseDiv.classList.add('col-6'); // Takes up half the row
+                        const tamilVerseLink = document.createElement('a');
+                        tamilVerseLink.href = `/verse_present/?book=${book}&chapter=${chapter}&versecount=${item.versecount}`;
+                        tamilVerseLink.target = 'blank';
+                        tamilVerseLink.innerText = `Tamil Verse ${item.versecount}: ${item.verse}`;
+                        tamilVerseLink.classList.add('verse-link'); // Optional: Add a class for styling
+                        tamilVerseDiv.appendChild(tamilVerseLink); // Append link to Tamil verse container
+
+                        // Create a container for the KJV verse (in another column)
+                        const kjvVerseDiv = document.createElement('div');
+                        kjvVerseDiv.classList.add('col-6'); // Takes up half the row
+                        const kjvVerseLink = document.createElement('a');
+                        kjvVerseLink.href = `/verse_present/?book=${book}&chapter=${chapter}&versecount=${item.versecount}`;
+                        kjvVerseLink.target = 'blank';
+                        kjvVerseLink.innerText = `KJV Verse ${item.versecount}: ${item.kjv}`;
+                        kjvVerseLink.classList.add('verse-link'); // Optional: Add a class for styling
+                        kjvVerseDiv.appendChild(kjvVerseLink); // Append link to KJV verse container
+
+                        // Append both Tamil and KJV containers to the row
+                        verseRow.appendChild(tamilVerseDiv);
+                        verseRow.appendChild(kjvVerseDiv);
+
+                        // Append the verse row to the main verses container
+                        versesContainer.appendChild(verseRow);
+                    });
+                } else {
+                    // If no verses are found, show a message
+                    versesContainer.innerHTML = '<p>No verses found for this chapter.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching verses:', error);
+            });
+    }
+}
+
+
+
+
+#######################
+
+
+        #############################
+        Fetch all verses for the selected chapter
+function fetchVerseCounts() {
+    const book = document.getElementById('book').value;
+    const chapter = document.getElementById('chapter').value;
+    const verseSelect = document.getElementById('versecount');
+    const versesContainer = document.getElementById('verses-container');
+
+    // Clear previous options and content first
+    verseSelect.innerHTML = '<option value="" disabled selected>Select Verse</option>'; // Clear previous options
+    versesContainer.innerHTML = ''; // Clear previous verses content
+    
+
+    if (book && chapter) {
+        fetch(`/get-versecounts/${book}/${chapter}/`)
+            .then(response => response.json())
+            .then(data => {
+                // Log the versecounts to the console for debugging
+                console.log('Fetched versecounts:', data.versecounts);
+
+                // Dynamically populate the verse dropdown and verse content
+                if (data.versecounts.length > 0) {
+                    // Create a fragment to append all the elements at once
+                    const fragment = document.createDocumentFragment();
+
+                    // Loop through verses and populate dropdown and verse content
+                    data.versecounts.forEach(item => {
+                        // Create an option in the versecount dropdown
+                        const option = document.createElement('option');
+                        option.value = item.versecount;
+                        option.innerText = `Verse ${item.versecount}`;
+                        verseSelect.appendChild(option);
+
+                        // Create a container for each verse's content
+                        const verseContent = document.createElement('div');
+                        verseContent.classList.add('verse-content');
+                        verseContent.innerHTML = `
+                            <h4>Verse ${item.versecount}</h4>
+                            <p><strong>Verse:</strong> ${item.verse}</p>
+                            <p><strong>KJV:</strong> ${item.kjv}</p>
+                        `;
+                        fragment.appendChild(verseContent);  // Append verse content to fragment
+                    });
+                    
+                    // Once all elements are added, append the fragment to the container
+                    versesContainer.appendChild(fragment);
+                    
+                } else {
+                    // If no verses are found, show a message
+                    versesContainer.innerHTML = '<p>No verses found for this chapter.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching verses:', error);
+            });
+    }
+}
+    </script> -->
+
+</body>
+
+</html>

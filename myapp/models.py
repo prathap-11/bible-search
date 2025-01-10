@@ -100,7 +100,7 @@ class Author(models.Model):
         return self.add_author
 
 
-class AuthorCermon(models.Model):
+class Authormessage(models.Model):
     title = models.CharField(max_length=100)
     url = models.CharField(max_length=100)
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='bible_references')

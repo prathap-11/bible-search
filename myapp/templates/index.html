@@ -4,39 +4,138 @@
 
 <head>
     <style>
-        /* General Layout */
+        /* General Styles */
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f7fb;
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f9f9f9;
             margin: 0;
             padding: 0;
+            line-height: 1.6;
+            color: #333;
         }
-        @keyframes rollRibbon {
-                0% {
-                    left: -100%;
-                }
-                100% {
-                    left: 100%;
-                }
+
+        /* Container Styling */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+
+
+        /* Heading Styling */
+        h1 {
+            font-size: 32px;
+            color: white;
+            text-align: center;
+            font-weight: 700;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Bible Reading Section */
+        .bible-reading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 10px 20px;
+            background-color: black;
+            border-radius: 31px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .bible-reading p {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: -12px;
+            color: white;
+            margin: 0;
+        }
+
+        /* Verse of the Day */
+        .verse-of-the-day {
+            background-color: #fff;
+            border-left: 5px solid #4CAF50;
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .verse-of-the-day:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .verse-of-the-day h1 {
+            font-size: 26px;
+            font-weight: 700;
+            padding: 14px;
+            margin: -1px;
+            border-radius: 86px;
+            background-color: black;
+            text-transform: uppercase;
+            color: white;
+            margin-bottom: 15px;
+            margin-top: 20px;
+        }
+
+        .verse-of-the-day p {
+            font-size: 18px;
+            color: black;
+            font-weight: 800;
+            line-height: 1.8;
+            margin: 10px 0;
+        }
+
+        .verse-of-the-day p strong {
+            font-weight: 700;
+            color: #222;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .bible-reading {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
             }
 
-          
-    .verse-of-the-day:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-    }
+            .verse-of-the-day {
+                padding: 20px;
+            }
 
-    .verse-of-the-day h1:hover {
-        color: #4CAF50;
-    }
+            .verse-of-the-day h1 {
+                font-size: 22px;
+            }
 
-    .verse-of-the-day p:hover {
-        color: #333;
-    }
+            .verse-of-the-day p {
+                font-size: 16px;
+            }
+        }
 
-    .verse-of-the-day .icon:hover {
-        color: #333;
-    }
+        footer {
+            background-color: #333;
+            /* Dark background color */
+            color: #fff;
+            /* White text */
+            text-align: center;
+            /* Center-align text */
+            padding: 10px 0;
+            /* Add some vertical padding */
+            font-size: 14px;
+            /* Adjust font size for simplicity */
+        }
+
+        footer p {
+            margin: 0;
+            /* Remove default margin */
+        }
     </style>
 </head>
 
@@ -45,56 +144,112 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 {% for crumb in breadcrumbs %}
-                    {% if forloop.last %}
-                        <li class="breadcrumb-item active" aria-current="page">{{ crumb.name }}</li>
-                    {% else %}
-                        <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.name }}</a></li>
-                    {% endif %}
+                {% if forloop.last %}
+                <li class="breadcrumb-item active" aria-current="page">{{ crumb.name }}</li>
+                {% else %}
+                <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.name }}</a></li>
+                {% endif %}
                 {% endfor %}
             </ol>
         </nav>
 
         <div style="display: flex; align-items: center; margin-bottom: 20px; font-family: 'Roboto', sans-serif;">
             <!-- Book Icon (You can use an icon library like FontAwesome or an image) -->
-            <h1 style="font-size: 28px; color: #333; margin-bottom: 15px; font-weight: bold; text-align: center; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s ease;">
-                Today's Bible Reading
+            <h1
+                style="font-size: 28px; color: #333; margin-bottom: 15px; font-weight: bold; text-align: center; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s ease;">
+                Today's Bible Reading:
             </h1>
-            <p style="font-size: 22px; color: #333; font-weight: bold; letter-spacing: 1px; transition: color 0.3s ease;">{{ bible_reading.tamilname }} ({{ bible_reading.bookname }}) {{ bible_reading.chapter }}</p>
-        </div>
-        <div class="verse-of-the-day" style="background-color: #fff; border-left: 5px solid #4CAF50; padding: 30px; margin: 20px 0; font-family: 'Arial', sans-serif; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; border-radius: 8px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
-            <h1 style="font-size: 28px; color: #333; margin-bottom: 15px; font-weight: bold; text-align: center; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s ease;">
-                Verse of the day
-            </h1>
-            <p style="font-size: 20px; color: #555; line-height: 1.8; font-weight: 700; text-align: center; transition: color 0.3s ease;">
-                <p> {{ daily_verse.tamilname }} ({{ daily_verse.bookname }}) {{ daily_verse.chapter }}:{{ daily_verse.versecount }}</p><br>
-                <p><strong>{{ daily_verse.verse }}</strong> </p><br>
-                <p><strong>{{ daily_verse.kjv }}</strong> </p>
+
+            {% if bible_reading %}
+            <p
+                style="font-size: 22px; color: #333; font-weight: bold; letter-spacing: 1px; transition: color 0.3s ease;">
+                {{ bible_reading.tamilname }} ({{ bible_reading.bookname }}) {{ bible_reading.chapter }}
             </p>
-
-            <div class="container">
-                <h1>Author Cermons</h1>
-                <ul>
-                    {% for cermon in cermons %}
-                        <li>
-                            <h2>{{ cermon.title }}</h2>
-                            <p><strong>Author:</strong> {{ cermon.author.add_author }}</p>
-                            <p><strong>Message:</strong> {{ cermon.tamil_bible_message|safe }}</p>
-                            <p><a href="{% url 'cermon_detail' cermon.url %}" target="_blank">Read more</a></p>
-                        </li>
-                    {% empty %}
-                        <li>No cermons available.</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            
+            {% else %}
+            <p
+                style="font-size: 22px; color: #333; font-weight: bold; letter-spacing: 1px; transition: color 0.3s ease;">
+                No Bible reading available for today.
+            </p>
+            {% endif %}
         </div>
-        
-        
-        
-       
-        
-      
-        
-</body>
 
-{% endblock %}
+        <div class="verse-of-the-day"
+            style="background-color: #fff; border-left: 5px solid #4CAF50; padding: 30px; margin: 20px 0; font-family: 'Arial', sans-serif; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; border-radius: 8px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+            <h1
+                style="font-size: 28px; color: #333; margin-bottom: 15px; font-weight: bold; text-align: center; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s ease;">
+                Verse of the Day
+            </h1>
+
+            {% if daily_verse %}
+            <p
+                style="font-size: 20px; color: #555; line-height: 1.8; font-weight: 700; text-align: center; transition: color 0.3s ease;">
+                {{ daily_verse.tamilname }} ({{ daily_verse.bookname }}) {{ daily_verse.chapter }}:{{daily_verse.versecount }}
+            </p><br>
+            <p><strong>{{ daily_verse.verse }}</strong></p><br>
+            <p><strong>{{ daily_verse.kjv }}</strong></p>
+            {% else %}
+            <p style="font-size: 20px; color: #555; text-align: center; font-weight: 700; transition: color 0.3s ease;">
+                No verse available for today.
+            </p>
+            {% endif %}
+        </div>
+
+
+
+
+        <!--<div style="width: 80%; margin: 0 auto; font-family: Arial, sans-serif; line-height: 1.6;">
+        <h1 style="text-align: center; color: #4CAF50; margin-bottom: 20px;">Author sermons</h1>
+        <ul style="list-style: none; padding: 0;">
+            {% for sermon in sermons %}
+                <li style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                    <h2 style="color: #333; font-weight: 600;
+font-size: 24px; margin: 0;">{{ sermon.title }}</h2>
+                    <p style="margin: 10px 0; font-size: 18px;">
+                        <strong>Author:</strong> {{ sermon.author.add_author }}
+                    </p>
+                    <p style="margin: 10px 0; font-size: 20px;">
+                        <strong>Message:</strong> {{ sermon.tamil_bible_message|safe }}
+                    </p>
+                    <p>
+                        <a href="{% url 'sermon_detail' sermon.url %}" style="color: #2196F3; text-decoration: none; font-size: 16px; font-weight: bold;">Read more</a>
+                    </p>  
+                </li>
+            {% empty %}
+                <li style="text-align: center; font-size: 18px; color: #777;">No sermons available.</li>
+            {% endfor %}
+        </ul>
+    </div>-->
+        <div style="width: 90%; margin: 0 auto; font-family: Arial, sans-serif;">
+            <h1
+                style="text-align: center; font-size: 24px; color: #333;background: #e1e1e1;border-radius: 35px;text-align: center;padding: 4px;">
+                Devotions</h1>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                {% for sermon in sermons %}
+                <div
+                    style="text-align: center;border-bottom: 2px solid lightgray;text-align: center;    margin-top: 5px;">
+                    <h2 style="font-size: 13px; color: #333; font-weight: bold; margin-bottom: 10px;">{{ sermon.title }}
+                    </h2>
+                    <p style="font-size: 14px; color: #555; line-height: 1.5; margin-bottom: 10px;">
+                        {{ sermon.tamil_bible_message|safe|slice:":50" }}...
+                        <a href="{% url 'sermon_detail' sermon.url %}"
+                            style="color: red; text-decoration: none; font-weight: bold;">Read More</a>
+                    </p>
+
+                    <p style="font-size: 12px; color: #007BFF; font-style: italic; margin-top: 10px;">- {{ sermon.author.add_author }}</p>
+                </div>
+                {% empty %}
+                <p style="grid-column: span 4; text-align: center; font-size: 16px; color: #777;">No devotions
+                    available.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <br>
+        <footer>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Your Website Name. All rights reserved.</p>
+            </div>
+        </footer>
+
+        {% endblock %}

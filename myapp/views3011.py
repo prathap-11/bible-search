@@ -157,8 +157,6 @@ def get_chapters(request, bookname):
 
 
 from django.urls import reverse
-import re
-from django.db.models import Q
 
 def base(request):
     books = BibleDb.objects.values('tamilname').distinct()  # Get all distinct book names
@@ -181,10 +179,6 @@ def base(request):
 
                 # Get the current verse details based on bookname, chapter, and versecount
                 verse_details = BibleDb.objects.filter(tamilname=book, chapter=chapter, versecount=versecount)
-                # # Find the related authormessage
-                authormessages = Authormessage.objects.filter(
-                Q(tamil_bible_message__icontains=f"({book} {chapter}:{versecount})")  # Look for the verse reference in parentheses
-                 )
                 if verse_details.exists():
                     current_verse = verse_details.first()
 
@@ -193,7 +187,6 @@ def base(request):
                     next_verse = BibleDb.objects.filter(id__gt=current_verse.id, tamilname=book, chapter=chapter).order_by('id').first()
 
                     return render(request, 'verse_detail.html', {
-                        'authormessage': authormessages,
                         'book': book,
                         'bookname': bookname,
                         'chapter': chapter,
@@ -249,14 +242,7 @@ def base(request):
                         prev_book_chapters = BibleDb.objects.filter(bookname=prev_book).values_list('chapter', flat=True).distinct().order_by(Cast('chapter', output_field=models.IntegerField()))
                         prev_chapter=len(prev_book_chapters)
                 
-                pattern = r'\(?\d?' + re.escape(book) + r'\s' + re.escape(str(chapter)) + r'(:\d+(-\d+)?)?\)?'
-
-                # # Find the related authormessage using regex lookup
-                authormessages = Authormessage.objects.filter(
-                     Q(tamil_bible_message__regex=pattern)
-                     )
                 return render(request, 'chapter_detail.html', {
-                    'authormessage': authormessages,
                     'book': book,
                     'chapter': chapter,
                     'verses': verses,
@@ -512,8 +498,7 @@ def index(request):
     except Daily_bible_reading.DoesNotExist:
         bible_reading = None  # or set a default value if necessary
 
-    # Fetch the most recent 8 sermons ordered by 'id' in descending order
-    sermons = Authormessage.objects.all().order_by('-id')[:8]
+    sermons=Authormessage.objects.all()
 
     # Handling POST request (Search form submission)
     if request.method == "POST":
@@ -560,20 +545,20 @@ def index(request):
 
 
 
-# from django.shortcuts import render
-# from .models import BibleDb
+from django.shortcuts import render
+from .models import BibleDb
 
-# def song_list(request):
-#     # Retrieve distinct song names (bookname)
-#     songs = BibleDb.objects.values('bookname').distinct()
-#     chapters = None
-#     songname = None
-#     chapters = BibleDb.objects.all()
-#     return render(request, 'song_list.html', {'chapters': chapters})
+def song_list(request):
+    # Retrieve distinct song names (bookname)
+    songs = BibleDb.objects.values('bookname').distinct()
+    chapters = None
+    songname = None
+    chapters = BibleDb.objects.all()
+    return render(request, 'song_list.html', {'chapters': chapters})
 
-# from django.shortcuts import render, get_object_or_404
-# from django.http import HttpResponseNotFound, HttpResponseBadRequest
-# from tamilbible.models import BibleDb
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseNotFound, HttpResponseBadRequest
+from tamilbible.models import BibleDb
 
 def chapter2(request, bookname, chapter):
     #try:
@@ -688,15 +673,9 @@ def chapter2(request, bookname, chapter):
 
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseNotFound, HttpResponseBadRequest
-from .models import BibleDb
+from tamilbible.models import BibleDb
 from django.db import models
 from django.db.models.functions import Cast
-import re
-from django.db.models import Q
-
-
-
-
 
 def chapter_detail(request, bookname, chapter):
     books = BibleDb.objects.values('tamilname').distinct()
@@ -773,20 +752,6 @@ def chapter_detail(request, bookname, chapter):
         {'name': 'Tamil Bible', 'url': '/tamil/'},
         {'name': f'{book} -  {chapter}', 'url': None},
     ]
-
-    # # Find the related authormessage
-    # authormessages = Authormessage.objects.filter(
-    # Q(tamil_bible_message__icontains=f"({book} {chapter})")  # Look for the verse reference in parentheses
-    # )
-    
-    # Form the regex pattern dynamically
-    # pattern = r'\(' + re.escape(book) + r'\s' + re.escape(str(chapter)) + r'(:\d+(-\d+)?)?\)'
-    pattern = r'\(?\d?' + re.escape(book) + r'\s' + re.escape(str(chapter)) + r'(:\d+(-\d+)?)?\)?'
-
-    # Find the related authormessage using regex lookup
-    authormessages = Authormessage.objects.filter(
-        Q(tamil_bible_message__regex=pattern)
-        )
     
     context = {
         "bookname": bookname,
@@ -806,7 +771,6 @@ def chapter_detail(request, bookname, chapter):
         "prev_book":prev_book,
         "next_book_tamil": next_book_tamil,
         "prev_book_tamil": prev_book_tamil,
-        "authormessage": authormessages,
     }
 
     return render(request, 'chapter_detail.html', context)
@@ -1176,16 +1140,15 @@ def verse(request,bookname,chapter,versecount):
     versecount=versecount
     # Get the specific verse details
     verse_details = BibleDb.objects.filter(bookname=bookname, chapter=chapter, versecount=versecount)
-    
-    return render(request, 'verse.html', {"bookname": bookname,"verse_details":verse_details,'books':books,"book":book,"chapter":chapter,"versecount":versecount})
-####################
-# old_test=OldTestamentBook.objects.all()
-#     new_test=NewTestamentBook.objects.all()
-#     bookschapter=[]
-#     for i in old_test:
-#         bookschapter.append(i.booknametamil)
-#     for j in new_test:
-#         bookschapter.append(j.booknametamil)    #"bookschapter":bookschapter,
+    old_test=OldTestamentBook.objects.all()
+    new_test=NewTestamentBook.objects.all()
+    bookschapter=[]
+    for i in old_test:
+        bookschapter.append(i.booknametamil)
+    for j in new_test:
+        bookschapter.append(j.booknametamil)
+    return render(request, 'verse.html', {"verse_details":verse_details,"bookschapter":bookschapter,'books':books,"book":book,"chapter":chapter,"versecount":versecount})
+
 def verse_english(request,bookname,chapter,versecount):
     print("INSIDE VERRRR DETAILSSSS 222")
     bookname=bookname
@@ -1211,7 +1174,6 @@ from .models import BibleDb
 from .forms import CorrectionForm
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.db.models import Q
 
 def verse_detail(request,bookname,chapter,versecount):
     print("INSIDE VERRRR DETAILSSSS BOOKNAME")
@@ -1254,19 +1216,6 @@ def verse_detail(request,bookname,chapter,versecount):
          {'name': f'{book}  {chapter}', 'url': f'/tamil/{book}/{chapter}/'},
          {'name': f'{book}{chapter}:{versecount}', 'url': None},  # Final breadcrumb
     ]
-
-    # Find the related authormessage
-    authormessages = Authormessage.objects.filter(
-    Q(tamil_bible_message__icontains=f"({book} {chapter}:{versecount})")  # Look for the verse reference in parentheses
-    )
-    
-    # if authormessages.exists():
-    #     authormessage = authormessages  # You can modify this logic to pass more messages if necessary        
-    # else:
-    #     authormessage = None
-        
-
-
     if request.method == 'POST':
         
         # Create the correction
@@ -1297,7 +1246,7 @@ def verse_detail(request,bookname,chapter,versecount):
             messages.error(request, "There was an error submitting your correction. Please try again.")
     else:
         form = CorrectionForm()
-    return render(request, 'verse_detail.html', {'authormessage': authormessages,"breadcrumbs":breadcrumbs,"verse_details":verse_details,"bookschapter":bookschapter,'books':books,"book":book,"bookname":bookname,"chapter":chapter,"versecount":versecount,"previous_verse": previous_verse,"next_verse": next_verse,'verse_words': verse_words,'form': form,})
+    return render(request, 'verse_detail.html', {"breadcrumbs":breadcrumbs,"verse_details":verse_details,"bookschapter":bookschapter,'books':books,"book":book,"bookname":bookname,"chapter":chapter,"versecount":versecount,"previous_verse": previous_verse,"next_verse": next_verse,'verse_words': verse_words,'form': form,})
 
 def verse_detail_by_word(request, word):
     # Search for verses containing the word (case-insensitive search)
@@ -1316,7 +1265,7 @@ def verse_detail_by_word(request, word):
         'word': word,
         'related_verses': related_verses,
         "count":count,
-        "books": books,
+        "books": books
     })
 
 
@@ -1513,38 +1462,12 @@ def sermon_view(request, url):
     # Initialize a list to store the (bookname, chapter, versecount) for each match
     verse_matches = []
 
-    # Check if tamil_bible_message is not empty
-    # if sermon.tamil_bible_message:
-    #     # Use regex to find all occurrences of (Bookname Chapter:VerseCount)
-    #     matches = re.findall(r'(\d*[^\d\s\(]+)\s(\d+):(\d+)', sermon.tamil_bible_message)
-
-    #     # For each match, create a tuple (bookname, chapter, versecount)
-    #     for match in matches:
-    #         tamil_bookname, chapter, versecount = match
-
-    #         # Now, look up the corresponding English book name from BibleDb based on tamilname
-    #         bible_entry = BibleDb.objects.filter(tamilname=tamil_bookname).first()
-
-    #         if bible_entry:
-    #             english_bookname = bible_entry.book.lower()  # Use the English name of the book and convert it to lowercase
-    #             # Construct the verse detail URL using the English book name
-    #             verse_detail_url = f"/tamil/{english_bookname}/{chapter}/{versecount}"
-    #         else:
-    #             # If no match is found, use the tamil name as fallback
-    #             verse_detail_url = f"/tamil/{tamil_bookname}/{chapter}/{versecount}"
-
-    #         verse_matches.append((match, verse_detail_url))
-
-    #     # Replace all occurrences of bookname chapter:verse with a link
-    #     modified_message = sermon.tamil_bible_message
-    #     for match, url in verse_matches:
-    #         verse_reference = f"{match[0]} {match[1]}:{match[2]}"  # Combine bookname, chapter, and verse
-    #         link = f'<a href="{url}" target="_blank">{verse_reference}</a>'
-    #         modified_message = modified_message.replace(verse_reference, link)
-
     if sermon.tamil_bible_message:
         # Use regex to find all occurrences of (Bookname Chapter:VerseCount or Chapter:VerseStartVerse-EndVerse)
-        matches = re.findall(r'(\d*[^\d\s\(]+)\s(\d+):(\d+)(?:-(\d+))?', sermon.tamil_bible_message)
+        # matches = re.findall(r'(\d*[^\d\s\(]+)\s(\d+):(\d+)(?:-(\d+))?', sermon.tamil_bible_message)
+        matches = re.findall(r'([^\d\s\(]+(?:\s*\d*)?)\s(\d+):(\d+)(?:-(\d+))?', sermon.tamil_bible_message)
+
+
 
         # For each match, create a tuple (bookname, chapter, versecount or verse range)
         for match in matches:
@@ -1587,226 +1510,8 @@ def sermon_view(request, url):
     # Pass the sermon object and modified message to the template
     return render(request, 'sermon.html', {'sermon': sermon, 'modified_message': modified_message})
 
-# import re
-# from django.shortcuts import render, get_object_or_404
-# from .models import Authormessage, BibleDb
-
-# def sermon_view(request, url):
-#     # Use get_object_or_404 to fetch the Authormessage object by its URL
-#     sermon = get_object_or_404(Authormessage, url=url)
-    
-#     # Initialize a list to store the (bookname, chapter, versecount) for each match
-#     verse_matches = []
-
-#     # Check if tamil_bible_message is not empty
-#     if sermon.tamil_bible_message:
-#         # Use regex to find all occurrences of (Bookname Chapter:VerseCount)
-#         matches = re.findall(r'(\d*[^\d\s\(]+)\s(\d+):(\d+)', sermon.tamil_bible_message)
-
-#         # For each match, create a tuple (bookname, chapter, versecount)
-#         for match in matches:
-#             tamil_bookname, chapter, versecount = match
-
-#             # Now, look up the corresponding English book name from BibleDb based on tamilname
-#             bible_entry = BibleDb.objects.filter(tamilname=tamil_bookname).first()
-
-#             if bible_entry:
-#                 english_bookname = bible_entry.book.lower()  # Use the English name of the book and convert it to lowercase
-#                 # Construct the verse detail URL using the English book name
-#                 verse_detail_url = f"/tamil/{english_bookname}/{chapter}/{versecount}"
-#             else:
-#                 # If no match is found, use the tamil name as fallback
-#                 verse_detail_url = f"/tamil/{tamil_bookname}/{chapter}/{versecount}"
-
-#             verse_matches.append((match, verse_detail_url))
-
-#         # Replace all occurrences of bookname chapter:verse with a link
-#         modified_message = sermon.tamil_bible_message
-#         for match, url in verse_matches:
-#             verse_reference = f"{match[0]} {match[1]}:{match[2]}"  # Combine bookname, chapter, and verse
-#             link = f'<a href="{url}" target="_blank">{verse_reference}</a>'
-#             modified_message = modified_message.replace(verse_reference, link)
-
-#     else:
-#         modified_message = ""
-
-#     # Pass the sermon object and modified message to the template
-#     return render(request, 'sermon.html', {'sermon': sermon, 'modified_message': modified_message})
-
-
-# from django.shortcuts import render
-# from .models import BibleDb
-
-# def verse_detail_range(request, bookname, chapter, startverse, endverse):
-#     try:
-#         # Convert startverse and endverse to integers
-#         # startverse = int(startverse)
-#         # endverse = int(endverse)
-
-#         # Make sure to filter by bookname, chapter, and verse range
-#         verses = BibleDb.objects.filter(
-#             bookname=bookname,
-#             chapter=chapter,
-#             versecount__gte=str(startverse),  # Filtering startverse
-#             versecount__lte=str(endverse)     # Filtering endverse
-#         ).order_by('versecount')  # Ensure verses are ordered by versecount
-
-#         # Render the filtered verses in a template
-#         return render(request, 'verse_detail_range.html', {
-#             'bookname': bookname,
-#             'chapter': chapter,
-#             'startverse': startverse,
-#             'endverse': endverse,
-#             'verses': verses
-#         })
-#     except ValueError:
-#         # Handle invalid input if startverse or endverse are not integers
-#         return render(request, 'error.html', {'message': 'Invalid verse range.'})
-
-# from django.shortcuts import render
-# from .models import BibleDb
-# from django.db.models import F
-# from django.db.models.functions import Cast
-# from django.db.models import IntegerField
-
-# def verse_detail_range(request, bookname, chapter, startverse, endverse):
-#     try:
-#         # Convert startverse and endverse to integers
-#         startverse = int(startverse)
-#         endverse = int(endverse)
-
-#         # Use Cast to convert the versecount to integer for sorting
-#         verses = BibleDb.objects.filter(
-#             bookname=bookname,
-#             chapter=chapter,
-#             versecount__gte=str(startverse),  # Filtering startverse
-#             versecount__lte=str(endverse)     # Filtering endverse
-#         ).annotate(
-#             versecount_int=Cast('versecount', IntegerField())  # Cast the versecount to an integer for sorting
-#         ).order_by('versecount_int')  # Order by the integer version of versecount
-
-#         # Render the filtered verses in a template
-#         return render(request, 'verse_detail_range.html', {
-#             'bookname': bookname,
-#             'chapter': chapter,
-#             'startverse': startverse,
-#             'endverse': endverse,
-#             'verses': verses
-#         })
-#     except ValueError:
-#         # Handle invalid input if startverse or endverse are not integers
-#         return render(request, 'error.html', {'message': 'Invalid verse range.'})
-
-
-# from django.shortcuts import render
-# from .models import BibleDb
-# from django.db.models import IntegerField
-# from django.db.models.functions import Cast
-
-# def verse_detail_range(request, bookname, chapter, startverse, endverse):
-#     try:
-#         # Convert startverse and endverse to integers
-#         startverse = int(startverse)
-#         endverse = int(endverse)
-
-#         # Use Cast to convert versecount to integer for filtering and sorting
-#         verses = BibleDb.objects.filter(
-#             bookname=bookname,
-#             chapter=chapter,
-#             versecount__gte=str(startverse),  # Ensure startverse is a string (versecount is stored as string)
-#             versecount__lte=str(endverse)     # Ensure endverse is a string (versecount is stored as string)
-#         ).annotate(
-#             versecount_int=Cast('versecount', IntegerField())  # Cast versecount to integer for sorting
-#         ).order_by('versecount_int')  # Order by the integer version of versecount
-#         for i in verses:
-#             print('versecount',i.versecount)
-#         # Render the filtered verses in a template
-#         return render(request, 'verse_detail_range.html', {
-#             'bookname': bookname,
-#             'chapter': chapter,
-#             'startverse': startverse,
-#             'endverse': endverse,
-#             'verses': verses
-#         })
-#     except ValueError:
-#         # Handle invalid input if startverse or endverse are not integers
-#         return render(request, 'error.html', {'message': 'Invalid verse range.'})
-########################################################################
-# from django.shortcuts import render
-# from .models import BibleDb
-
-# def verse_detail_range(request, bookname, chapter, startverse, endverse):
-#     try:
-#         # Convert startverse and endverse to integers
-#         startverse = int(startverse)
-#         endverse = int(endverse)
-
-#         # Filter verses by the range but sort them manually later
-#         verses = BibleDb.objects.filter(
-#             bookname=bookname,
-#             chapter=chapter,
-#             versecount__gte=str(startverse),  # Ensure we are comparing as strings
-#             versecount__lte=str(endverse)     # Ensure we are comparing as strings
-#         )
-
-#         # Manually sort verses by converting 'versecount' to an integer
-#         sorted_verses = sorted(verses, key=lambda v: int(v.versecount))
-#         for i in sorted_verses:
-#             print(i.versecount)
-        
-
-#         # Render the filtered and manually sorted verses in a template
-#         return render(request, 'verse_detail_range.html', {
-#             'bookname': bookname,
-#             'chapter': chapter,
-#             'startverse': startverse,
-#             'endverse': endverse,
-#             'verses': sorted_verses
-#         })
-#     except ValueError:
-#         # Handle invalid input if startverse or endverse are not integers
-#         return render(request, 'error.html', {'message': 'Invalid verse range.'})
 
 #####################################################
-
-# from django.shortcuts import render
-# from .models import BibleDb
-
-# def verse_detail_range(request, bookname, chapter, startverse, endverse):
-#     try:
-#         # Convert startverse and endverse to integers
-#         startverse = int(startverse)
-#         endverse = int(endverse)
-
-#         # Filter verses by the range as strings
-#         verses = BibleDb.objects.filter(
-#             bookname=bookname,
-#             chapter=chapter,
-#             versecount__gte=str(startverse),  # Filtering startverse as string
-#             versecount__lte=str(endverse)     # Filtering endverse as string
-#         )
-
-#         # Manually sort verses by converting 'versecount' to an integer
-#         sorted_verses = sorted(verses, key=lambda v: int(v.versecount))
-
-#         # Now slice the verses to include only those in the range [startverse, endverse]
-#         filtered_sorted_verses = [verse for verse in sorted_verses if startverse <= int(verse.versecount) <= endverse]
-
-#         # Render the filtered and sorted verses in a template
-#         return render(request, 'verse_detail_range.html', {
-#             'bookname': bookname,
-#             'chapter': chapter,
-#             'startverse': startverse,
-#             'endverse': endverse,
-#             'verses': filtered_sorted_verses
-#         })
-#     except ValueError:
-#         # Handle invalid input if startverse or endverse are not integers
-#         return render(request, 'error.html', {'message': 'Invalid verse range.'})
-########################################################################
-
-from django.shortcuts import render
-from .models import BibleDb
 
 def verse_detail_range(request, bookname, chapter, startverse, endverse):
     books = BibleDb.objects.values('tamilname').distinct()
@@ -1844,110 +1549,3 @@ def verse_detail_range(request, bookname, chapter, startverse, endverse):
         # Handle invalid input if startverse or endverse are not integers
         return render(request, 'error.html', {'message': 'Invalid verse range.'})
 
-
-# from django.shortcuts import render
-# from .models import BibleDb
-# from django.db.models import IntegerField
-# from django.db.models.functions import Cast
-
-# def verse_detail_range(request, bookname, chapter, startverse, endverse):
-#     try:
-#         # Convert startverse and endverse to integers
-#         startverse = int(startverse)
-#         endverse = int(endverse)
-
-#         # Filter the BibleDb entries based on the book, chapter, and verse range
-#         verses = BibleDb.objects.filter(
-#             bookname=bookname,
-#             chapter=chapter,
-#             versecount__gte=str(startverse),  # Filtering startverse as string since versecount is CharField
-#             versecount__lte=str(endverse)     # Filtering endverse as string
-#         ).order_by('id')  # Ordering by id ensures the natural order of records in the database
-
-#         # Render the filtered verses in a template
-#         return render(request, 'verse_detail_range.html', {
-#             'bookname': bookname,
-#             'chapter': chapter,
-#             'startverse': startverse,
-#             'endverse': endverse,
-#             'verses': verses
-#         })
-#     except ValueError:
-#         # Handle invalid input if startverse or endverse are not integers
-#         return render(request, 'error.html', {'message': 'Invalid verse range.'})
-
-################# presenter #######################
-from django.shortcuts import render
-from .models import BibleDb
-
-# Primary Tab View (search form)
-def search_form(request):
-    # Fetch distinct books for the dropdown
-    books = BibleDb.objects.values('tamilname').distinct()
-    return render(request, 'search_form.html', {'books': books})
-
-# Secondary Tab View (display verse details)
-def verse_present(request):
-    verse_details = None  # Default to None if no results are found
-    book = request.GET.get('book', None)
-    chapter = request.GET.get('chapter', None)
-    versecount = request.GET.get('versecount', None)
-
-    if book and chapter and versecount:
-        # Query the BibleDb for matching verse data
-        verse_details = BibleDb.objects.filter(
-            tamilname=book,
-            chapter=chapter,
-            versecount=versecount
-        )
-    
-    # Get distinct book names to populate dropdown (if needed)
-    books = BibleDb.objects.values('tamilname').distinct()
-
-    return render(request, 'verse_present.html', {
-        'verse_details': verse_details,
-        'books': books,
-        'book': book,
-        'chapter': chapter,
-        'versecount': versecount
-    })
-
-from django.http import JsonResponse
-from .models import BibleDb
-
-# View to fetch chapters based on the selected book
-def get_chapters(request, bookname):
-    print('boookk',bookname)
-    chapters = BibleDb.objects.filter(tamilname=bookname).values_list('chapter', flat=True).distinct()
-    print('chapters',chapters)
-    return JsonResponse({'chapters': list(chapters)})
-
-from django.http import JsonResponse
-from .models import BibleDb
-
-# View to fetch versecounts, verses and kjv based on the selected book and chapter
-def get_versecounts(request, bookname, chapter):
-    # Fetch versecounts, verses, and kjv content
-    verses_data = BibleDb.objects.filter(tamilname=bookname, chapter=chapter).values('versecount', 'verse', 'kjv').distinct()
-    for i in verses_data:
-        print('versecount',i)
-        
-
-    # Structure the response
-    verse_info = [
-        {
-            'versecount': item['versecount'],
-            'verse': item['verse'],
-            'kjv': item['kjv']
-        }
-        for item in verses_data
-    ]
-    print('verse_infooooooo------',verse_info)
-
-    return JsonResponse({'versecounts': verse_info})
-
-
-    # # View to fetch versecounts based on the selected book and chapter
-# def get_versecounts(request, bookname, chapter):
-#     versecounts = BibleDb.objects.filter(tamilname=bookname, chapter=chapter).values_list('versecount', flat=True).distinct()
-#     return JsonResponse({'versecounts': list(versecounts)})

@@ -1,18 +1,18 @@
 # admin.py
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
-from .models import BibleDb,OldTestamentBook, Chapter,NewTestamentBook,ChapterNew,TaxonomyBibleStudy #,AuthorCermon
+from .models import BibleDb,OldTestamentBook, Chapter,NewTestamentBook,ChapterNew,TaxonomyBibleStudy #,Authormessage
 
 # from django.contrib import admin
-# from .models import AuthorCermon, TaxonomyBibleStudy
+# from .models import Authormessage, TaxonomyBibleStudy
 
 # from django.contrib import admin
-# from .models import AuthorCermon, TaxonomyBibleStudy
+# from .models import Authormessage, TaxonomyBibleStudy
 #########################################################################
 # from django.contrib import admin
-# from .models import AuthorCermon, TaxonomyBibleStudy
+# from .models import Authormessage, TaxonomyBibleStudy
 
-# class AuthorCermonAdmin(admin.ModelAdmin):
+# class AuthormessageAdmin(admin.ModelAdmin):
 #     list_display = ('title', 'author', 'select_tag', 'select_book', 'chapter')
 
 #     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -31,9 +31,9 @@ from .models import BibleDb,OldTestamentBook, Chapter,NewTestamentBook,ChapterNe
 #             # kwargs["widget"] = admin.widgets.FilteredSelectMultiple("select_tag", False)
 #         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-# admin.site.register(AuthorCermon, AuthorCermonAdmin)
+# admin.site.register(Authormessage, AuthormessageAdmin)
 ###############################################################
-from .models import TaxonomyBibleStudy,Author,AuthorCermon
+from .models import TaxonomyBibleStudy,Author,Authormessage
 
 class TaxonomyBibleStudyAdmin(admin.ModelAdmin):
     list_display=('add_taxonomy',)
@@ -43,14 +43,13 @@ class AuthorAdmin(admin.ModelAdmin):
     list_display=('add_author',)
     search_fields=('add_author',)
 
-admin.site.register(TaxonomyBibleStudy,TaxonomyBibleStudyAdmin)
-admin.site.register(Author, AuthorAdmin)
-
-class AuthorCermonAdmin(admin.ModelAdmin):
+class AuthormessageAdmin(admin.ModelAdmin):
     list_display=('title','author',)
     search_fields=('title','author',)
 
-admin.site.register(AuthorCermon,AuthorCermonAdmin)
+admin.site.register(TaxonomyBibleStudy,TaxonomyBibleStudyAdmin)
+admin.site.register(Author, AuthorAdmin)
+admin.site.register(Authormessage,AuthormessageAdmin)
 
 
 
@@ -84,11 +83,11 @@ class BibleDbAdmin(ImportExportModelAdmin):
 
 # admin.site.register(TaxonomyBibleStudy, TaxonomyBibleStudyAdmin)
 
-# class AuthorCermonAdmin(admin.ModelAdmin):
+# class AuthormessageAdmin(admin.ModelAdmin):
 #     list_display = ('title', 'url','author','select_tag','select_book','chapter',)#'tamil_bible_message')
 #     search_fields = ('title', 'select_book','chapter')
 
-# admin.site.register(AuthorCermon, AuthorCermonAdmin)
+# admin.site.register(Authormessage, AuthormessageAdmin)
 
 
 

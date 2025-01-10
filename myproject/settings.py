@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'myapp',
     'import_export',
     'ckeditor',
-    #'ckeditor_uploader',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -136,3 +136,6 @@ EMAIL_USE_TLS = True  # Enable TLS
 EMAIL_HOST_USER = "trialmsg1@gmail.com"  # Your email address
 EMAIL_HOST_PASSWORD = "ccdf tuxh jdql xqcq"  # Your email password (use App password for Gmail)
 DEFAULT_FROM_EMAIL = 'pratapanu11@gmail.com'  # Default from email address
+
+CKEDITOR_UPLOAD_PATH = "uploads/"
+

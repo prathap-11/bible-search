@@ -12773,8 +12773,8 @@
                                 class="whatsapp" target="_blank">
                                 <i class="fab fa-whatsapp"></i>
                             </a>&nbsp;
-                            <a href="{   'verse' verse.bookname verse.chapter verse.versecount }"
-                                class="text-decoration-none">
+                            <a href="{% url  'verse' bookname chapter versecount %}"
+                                class="text-decoration-none" target="blank" rel="noopener noreferrer">
                                 <i class="fa-solid fa-desktop"></i>
                             </a>
                             &nbsp;&nbsp;

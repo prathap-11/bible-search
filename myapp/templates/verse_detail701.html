@@ -657,8 +657,16 @@
     margin-bottom: 0;
   }
 
- 
+  .blockquote-footer {
+    margin-top: -1rem;
+    margin-bottom: 1rem;
+    font-size: 0.875em;
+    color: #6c757d;
+  }
 
+  .blockquote-footer::before {
+    content: "— ";
+  }
 
   .img-fluid {
     max-width: 100%;
@@ -4861,7 +4869,16 @@
     border-radius: var(--bs-card-inner-border-radius) var(--bs-card-inner-border-radius) 0 0;
   }
 
-  
+  .card-footer {
+    padding: var(--bs-card-cap-padding-y) var(--bs-card-cap-padding-x);
+    color: var(--bs-card-cap-color);
+    background-color: var(--bs-card-cap-bg);
+    border-top: var(--bs-card-border-width) solid var(--bs-card-border-color);
+  }
+
+  .card-footer:last-child {
+    border-radius: 0 0 var(--bs-card-inner-border-radius) var(--bs-card-inner-border-radius);
+  }
 
   .card-header-tabs {
     margin-right: calc(-0.5 * var(--bs-card-cap-padding-x));
@@ -6134,7 +6151,22 @@
     padding: var(--bs-modal-padding);
   }
 
+  .modal-footer {
+    display: flex;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    padding: calc(var(--bs-modal-padding) - var(--bs-modal-footer-gap) * 0.5);
+    background-color: var(--bs-modal-footer-bg);
+    border-top: var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color);
+    border-bottom-right-radius: var(--bs-modal-inner-border-radius);
+    border-bottom-left-radius: var(--bs-modal-inner-border-radius);
+  }
 
+  .modal-footer>* {
+    margin: calc(var(--bs-modal-footer-gap) * 0.5);
+  }
 
   @media (min-width: 576px) {
     .modal {
@@ -12646,7 +12678,6 @@
     border-radius: 36px;
 
   }
- 
 </style>
 
 <body>
@@ -12685,19 +12716,19 @@
             {% for verse in verse_details %}
             <p class="card-text" style="font-size: 19px;">
 
-              {{ verse.verse }}
+              {{ verse.versecount }}.&nbsp; {{ verse.verse }}
 
             </p>
-
-            
-            <!--<div class="d-flex justify-content-between mt-3">
+            <!-- Navigation Buttons for Previous and Next Verse -->
+            <div>
               <a href="{% url 'chapter_detail' bookname chapter %}" class="btn btn-primary" style="border-radius: 17px;
-                          background-color: white;
-                          color: black;
-                          border: 2px solid black;
-                          font-weight: 600;"> Read full chapter:{{ book }} {{ chapter }} </a>
-            </div>-->
-            <div class="d-flex justify-content-between mt-3">
+                              background-color: white;
+                              color: black;
+                              border: 2px solid black;
+                              font-weight: 600;"> Read full chapter:{{ book }} {{ chapter }} </a>
+            </div>
+            <div class="d-flex justify-content-between mt-3" style="margin-bottom: 11px;">
+
 
               <a href="{% url 'verse_detail_english' bookname chapter versecount %}" class="btn btn-primary" style="border-radius: 17px;
                               background-color: white;
@@ -12710,92 +12741,8 @@
                               border: 2px solid black;
                               font-weight: 600;"> Read Tamil English</a>
             </div>
-		
-
-
-             <!-- Navigation Buttons for Previous and Next Verse -->
-            <div class="d-flex justify-content-between mt-3">
-
-              {% if previous_verse %}
-              <a href="{% url 'verse_detail' bookname=bookname chapter=chapter versecount=previous_verse.versecount %}"
-                class="btn btn-secondary"
-                style="border-radius: 17px; background-color: white; color: black; border: 2px solid black; font-weight: 600;">
-                Previous Verse
-              </a>
-              {% endif %}
-
-              {% if next_verse %}
-              <a href="{% url 'verse_detail' bookname=bookname chapter=chapter versecount=next_verse.versecount %}"
-                class="btn btn-secondary"
-                style="border-radius: 17px; background-color: white; color: black; border: 2px solid black; font-weight: 600;">
-                Next Verse
-              </a>
-              {% endif %}
-
-            </div>
-            <div style="margin-left: 305px; display: flex; align-items: center;">
-              <a href="https://api.whatsapp.com/send?text=Check out {{ songname }} - Chapter {{ chapter }}: {% for verse in verse_details %}{{ verse.versecount }}. {{ verse.verse }} {% endfor %}"
-                class="whatsapp" target="_blank">
-                <i class="fab fa-whatsapp"></i>
-              </a>&nbsp;
-              <a href="{% url 'verse' bookname chapter versecount %}" class="text-decoration-none">
-                <i class="fa-solid fa-desktop"></i>
-              </a>
-              &nbsp;&nbsp;
-              <a href="https://www.instagram.com/" class="instagram" target="_blank">
-                <i class="fab fa-instagram"></i>
-              </a>
-            </div>
-                <hr style="border: 1px solid lightgray;">
-            <div class="d-flex justify-content-between mt-3">
-              <a href="{% url 'chapter_detail' bookname chapter %}" class="btn btn-primary" style="border-radius: 17px;
-                          background-color: white;
-                          color: black;
-                          border: 2px solid black;
-                          font-weight: 600;"> Read full chapter:{{ book }} {{ chapter }} </a>
-            </div>
-
-            <!-- tags in verses  -->
-            <div class="small text-muted"></div>
-                  <hr style="border: 1px solid black;">
-            <h2 class="card-title" style="text-shadow: 1px 2px 3px #0a0700;    margin-left: 25px;
-    margin-bottom: 7px;">Tags
-            </h2>
-            
-
-            
-
-            {% for verse_id, words in verse_words.items %}
-            <ul style="list-style: none; display: flex; gap: 4px; flex-wrap: wrap;">
-              {% for word in words %}
-                <li>
-                  <a href="{% url 'verse_detail_by_word' word=word %}" 
-                     style="text-decoration: none;
-                            color: inherit;
-                            display: inline-block;
-                            padding: .65em;
-                            font-size: small;
-                            font-weight: 600;
-                            line-height: 1;
-                            color: white;
-                            background-color: #003366;
-                            text-align: center;
-                            white-space: nowrap;
-                            vertical-align: baseline;
-                            border-radius: .25rem;">
-                    {{ word }}
-                  </a>
-                </li>
-              {% endfor %}
-            </ul>
-            
-            {% endfor %}
-
-          </div>
-          {% endfor %}
-          <!---<div style="margin-left: 42px;margin-bottom: 20px;">
-            <!-- Correction Form 
-            <h3>Report a Correction</h3>
+            <!-- Correction Form -->
+            <!-- <h3>Report a Correction</h3>
             <form method="post">
               {% csrf_token %}
               {{ form.as_p }}
@@ -12807,10 +12754,13 @@
               <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
                 {% endfor %}
             </ul>
-            {% endif %} 
-          </div>-->
-          
-	<div>
+            {% endif %} -->
+
+
+
+
+          </div>
+          <div>
           <h1>Related Topics/Devotions</h1>
           {% if authormessage %}
           <div>           
@@ -12833,6 +12783,9 @@
           <p>No related topics found.</p>
           {% endif %}
           </div>
+
+
+
 
 
 
@@ -12885,25 +12838,51 @@
             </div>
           </div>
           <!-- Pagination-->
-          <!--<nav aria-label="Pagination">
+          <nav aria-label="Pagination">
             <hr class="my-0" />
             <ul class="pagination justify-content-center my-4">
-              <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a>
-              </li>
-              <li class="page-item active" aria-current="page"><a class="page-link" href="#!">1</a></li>
-              <li class="page-item"><a class="page-link" href="#!">2</a></li>
-              <li class="page-item"><a class="page-link" href="#!">3</a></li>
-              <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-              <li class="page-item"><a class="page-link" href="#!">15</a></li>
-              <li class="page-item"><a class="page-link" href="#!">Older</a></li>
-            </ul>-->
+              <div class="d-flex justify-content-between mt-3">
+
+                {% if previous_verse %}
+                <a href="{% url 'verse_detail' bookname=bookname chapter=chapter versecount=previous_verse.versecount %}"
+                  class="btn"
+                  style="border-radius: 17px; background-color: white; color: black; border: 2px solid black; font-weight: 600;">
+                  Previous Verse
+                </a>
+                {% endif %}
+
+                {% if next_verse %}
+                <a href="{% url 'verse_detail' bookname=bookname chapter=chapter versecount=next_verse.versecount %}"
+                  class="btn "
+                  style="border-radius: 17px;margin-left: 559px; background-color: white; color: black; border: 2px solid black; font-weight: 600;">
+                  Next Verse
+                </a>
+                {% endif %}
+
+              </div>
+            </ul>
           </nav>
+          <div style="margin-left: 370px; display: flex; align-items: center;">
+            <a href="https://api.whatsapp.com/send?text=Check out {{ songname }} - Chapter {{ chapter }}: {% for verse in verse_details %}{{ verse.versecount }}. {{ verse.verse }} {% endfor %}"
+              class="whatsapp" target="_blank" style="margin-top: -130px;">
+              <i class="fab fa-whatsapp"></i>
+            </a>&nbsp;
+            <a href="{% url 'verse' bookname chapter versecount %}" class="text-decoration-none"
+              style="margin-top: -130px;">
+              <i class="fa-solid fa-desktop"></i>
+            </a>
+            &nbsp;&nbsp;
+            <a href="https://www.instagram.com/" class="instagram" target="_blank" style="margin-top: -130px;">
+              <i class="fab fa-instagram"></i>
+            </a>
+
+            {% endfor %}
+          </div>
         </div>
         <!-- Side widgets-->
         <div class="col-lg-4">
           <!-- Search widget-->
-          <div class="card mb-4" style="margin-top: -578px;
-    margin-left: -103px;">
+          <div class="card mb-4">
             <div class="card-header">Search</div>
             <div class="card-body">
               <div class="input-group">
@@ -12914,7 +12893,7 @@
             </div>
           </div>
           <!-- Categories widget-->
-          <div class="card mb-4" style="margin-left: -103px;">
+          <div class="card mb-4">
             <div class="card-header">Categories</div>
             <div class="card-body">
               <div class="row">
@@ -12936,7 +12915,7 @@
             </div>
           </div>
           <!-- Side widget-->
-          <div class="card mb-4" style="margin-left: -104px;">
+          <div class="card mb-4">
             <div class="card-header">Side Widget</div>
             <div class="card-body">You can put anything you want inside of these side widgets. They are easy to use, and
               feature the Bootstrap 5 card component!</div>
@@ -12944,21 +12923,17 @@
         </div>
       </div>
     </div>
-
-    </div>
-  
     <!-- Footer-->
-    <footer style="width: 100%;margin-top: 170px; background-color: #333; color: #fff; text-align: center; padding: 10px 0; font-size: 14px; box-sizing: border-box;">
-      <p style="margin: 0; word-wrap: break-word;">&copy; 2024 Your Website Name. All rights reserved.</p>
-  </footer>
-  
-  
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2023</p>
+      </div>
+    </footer>
     <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Core theme JS-->
     <script src="js/scripts.js"></script>
 </body>
-
 {% endblock %}
 
 </html>

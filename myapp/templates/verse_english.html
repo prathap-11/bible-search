@@ -1,6 +1,6 @@
-<!-- { extends 'base.html' } -->
+{% extends 'base_english.html' %}
 {% load static %}
-<!-- { block content } -->
+{% block content %}
 <style>
   h2.card-title{
     width: 789px;
@@ -35,16 +35,12 @@
 </style>
 <body>
   {% for verse in verse_details %}
-  <h2 class="card-title" style="text-shadow: 1px 2px 3px #0a0700;">{{ book }} {{ chapter }}:{{ verse.versecount }}</h2>
- 
-
- 
- <p>{{ verse.verse }}</p>
+  <h2 class="card-title" style="text-shadow: 1px 2px 3px #0a0700;">{{ bookname }} {{ chapter }}:{{ verse.versecount }}</h2>
  <p>{{ verse.kjv }}</p>
 
  {% endfor %}
 </body>
 
-<!-- { endblock } -->
+{% endblock %}
 
 </html>
