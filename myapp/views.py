@@ -4,6 +4,22 @@ from .models import BibleDb,OldTestamentBook,NewTestamentBook
 
 
 
+from .models import Authormessage
+
+def tamil_bible_study(request):
+    # Retrieve the 8 most recent records from the Authormessage model
+    latest_messages = Authormessage.objects.all().order_by('-id')[:8]
+
+    # Retrieve the 8 most viewed messages, ordered by view_count
+    most_viewed_messages = Authormessage.objects.all().order_by('-view_count')[:8]
+    
+    context = {
+        'title': 'Tamil Bible Study',
+        'latest_messages': latest_messages,  # Pass the latest 8 records to the template
+        'most_viewed_messages': most_viewed_messages,  # Pass the most viewed records to the template
+    }
+    return render(request, 'tamil_bible_study.html', context)
+
 
 
 from django.db.models import Q
@@ -1883,7 +1899,7 @@ from .models import BibleDb
 # Primary Tab View (search form)
 def search_form(request):
     # Fetch distinct books for the dropdown
-    books = BibleDb.objects.values('tamilname').distinct()
+    books = BibleDb.objects.values('bookname').distinct()
     return render(request, 'search_form.html', {'books': books})
 
 # Secondary Tab View (display verse details)
@@ -1896,7 +1912,7 @@ def verse_present(request):
     if book and chapter and versecount:
         # Query the BibleDb for matching verse data
         verse_details = BibleDb.objects.filter(
-            tamilname=book,
+            bookname=book,
             chapter=chapter,
             versecount=versecount
         )
@@ -1918,7 +1934,7 @@ from .models import BibleDb
 # View to fetch chapters based on the selected book
 def get_chapters(request, bookname):
     print('boookk',bookname)
-    chapters = BibleDb.objects.filter(tamilname=bookname).values_list('chapter', flat=True).distinct()
+    chapters = BibleDb.objects.filter(bookname=bookname).values_list('chapter', flat=True).distinct()
     print('chapters',chapters)
     return JsonResponse({'chapters': list(chapters)})
 
@@ -1928,7 +1944,7 @@ from .models import BibleDb
 # View to fetch versecounts, verses and kjv based on the selected book and chapter
 def get_versecounts(request, bookname, chapter):
     # Fetch versecounts, verses, and kjv content
-    verses_data = BibleDb.objects.filter(tamilname=bookname, chapter=chapter).values('versecount', 'verse', 'kjv').distinct()
+    verses_data = BibleDb.objects.filter(bookname=bookname, chapter=chapter).values('versecount', 'verse', 'kjv').distinct()
     for i in verses_data:
         print('versecount',i)
         
@@ -1942,12 +1958,46 @@ def get_versecounts(request, bookname, chapter):
         }
         for item in verses_data
     ]
-    print('verse_infooooooo------',verse_info)
-
     return JsonResponse({'versecounts': verse_info})
 
+# View to fetch verse details for a given book, chapter, and versecount
+def get_verse_details(request, bookname, chapter, versecount):
+    verse_data = BibleDb.objects.filter(
+        bookname=bookname,
+        chapter=chapter,
+        versecount=versecount
+    ).values('verse', 'kjv').first()
+
+    if verse_data:
+        return JsonResponse({
+            'tamil': verse_data['verse'],
+            'kjv': verse_data['kjv']
+        })
+    else:
+        return JsonResponse({'error': 'Verse not found'}, status=404)
 
     # # View to fetch versecounts based on the selected book and chapter
 # def get_versecounts(request, bookname, chapter):
 #     versecounts = BibleDb.objects.filter(tamilname=bookname, chapter=chapter).values_list('versecount', flat=True).distinct()
 #     return JsonResponse({'versecounts': list(versecounts)})
+
+
+# views.py
+from django.shortcuts import render
+
+def home(request):
+    # Get fullscreen state from session, or default to False
+    is_fullscreen = request.session.get('isFullscreen', False)
+    return render(request, 'home.html', {'is_fullscreen': is_fullscreen})
+
+def set_fullscreen(request):
+    # Update fullscreen state in session
+    fullscreen = request.GET.get('fullscreen', 'false') == 'true'
+    request.session['isFullscreen'] = fullscreen
+    return JsonResponse({'status': 'ok'})
+
+
+from django.shortcuts import render
+
+def fullscreen_view(request):
+    return render(request, 'fullscreen_page.html')

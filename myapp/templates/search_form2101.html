@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tamilbiblesearch</title>
+    <style>
+        /* General Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* height: 100vh; */
+            min-height: 100px;
+            padding: 20px;
+        }
+
+        /* Form Styling */
+        form {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* Select Dropdown */
+        select {
+            background-color: black;
+            color: white;
+            padding: 10px;
+            border-radius: 22px;
+            border: 2px solid white;
+            font-size: 16px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        select:focus {
+            background-color: #333;
+            border-color: #00bcd4;
+            outline: none;
+        }
+
+        /* Input Fields for Chapter and Verse */
+        input[type="text"] {
+            background-color: white;
+            border-radius: 16px;
+            border: 2px solid #ddd;
+            padding: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        input[type="text"]:focus {
+            border-color: #00bcd4;
+            box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+            outline: none;
+        }
+
+        /* Form Row (Chapter and Verse) */
+        .d-flex {
+            gap: 20px;
+        }
+
+        /* Submit Button */
+        .btn {
+            width: 100%;
+            background-color: black;
+            color: white;
+            border-radius: 16px;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #00bcd4;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .btn:focus {
+            outline: none;
+        }
+
+        /* Add any necessary styles for fullscreen button */
+        #fullscreen-btn, #exit-fullscreen-btn {
+            font-size: 16px;
+            padding: 10px;
+            background-color: #00bcd4;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s;
+        }
+
+        #fullscreen-btn:hover, #exit-fullscreen-btn:hover {
+            background-color: #007b8c;
+        }
+
+        /* Fullscreen Mode Styling */
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100px;
+            padding: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .col-12 {
+                width: 100% !important;
+            }
+
+            .d-flex {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .btn {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- search_form.html -->
+    <div class="container">
+        <form method="GET" action="{% url 'verse_present' %}" class="row g-3 justify-content-center" target="blank">
+            <!-- Book Dropdown -->
+            <div class="col-12 col-md-3">
+                <select id="book" name="book" class="form-select" required onchange="fetchChapters()">
+                    <option value="" disabled selected>Select a Book</option>
+                    {% for book in books %}
+                    <option value="{{ book.tamilname }}" {% if book.tamilname == request.GET.book %}selected{% endif %}>
+                        {{ book.tamilname }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Chapter Dropdown (Dynamic) -->
+            <div class="col-12 col-md-4 d-flex gap-2">
+                <select id="chapter" name="chapter" class="form-select" required onchange="fetchVerseCounts()">
+                    <option value="" disabled selected>Select Chapter</option>
+                    <!-- Chapters will be populated by AJAX -->
+                </select>
+            </div>
+
+            <!-- Versecount Dropdown (Dynamic) -->
+            <div class="col-12 col-md-4 d-flex gap-2">
+                <select id="versecount" name="versecount" class="form-select" required onchange="fetchSelectedVerse()">
+                    <option value="" disabled selected>Select Verse</option>
+                    <!-- Versecounts will be populated by AJAX -->
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <!-- <div class="col-12 col-md-2">
+                <button type="submit" class="btn">Search</button>
+            </div> -->
+        </form>
+     
+        
+  <form id="style-form">
+    <label for="font-style">Font Style</label>
+    <select id="font-style">
+      <option value="Arial">Arial</option>
+      <option value="Georgia">Georgia</option>
+      <option value="Courier New">Courier New</option>
+    </select>
+  
+    <label for="font-size">Font Size</label>
+    <div>
+      <button type="button" id="decrease-font">Reduce</button>
+      <span id="font-size-display">16px</span>
+      <button type="button" id="increase-font">Increase</button>
+    </div>
+  
+    <label for="font-color">Font Color</label>
+    <input type="color" id="font-color" value="#000000" />
+  
+    <label for="background-color">Background Color</label>
+    <input type="color" id="background-color" value="#ffffff" />
+  </form>
+
+  
+  
+  <script>
+    const fontSizeDisplay = document.getElementById('font-size-display');
+    let currentFontSize = 16;  // Default font size in pixels
+  
+    // Update the font size in localStorage and the display
+    function updateFontSize(newFontSize) {
+        // Ensure font size stays within bounds (10px to 60px)
+    if (newFontSize >= 10 && newFontSize <= 60) {
+        currentFontSize = newFontSize;
+      fontSizeDisplay.textContent = `${newFontSize}px`;
+  
+      // Save to localStorage
+      localStorage.setItem('fontSize', `${newFontSize}px`);
+    }
+      
+    }
+  
+    // Increase font size
+    document.getElementById('increase-font').addEventListener('click', function() {
+      updateFontSize(currentFontSize + 2);
+    });
+  
+    // Decrease font size
+    document.getElementById('decrease-font').addEventListener('click', function() {
+      updateFontSize(currentFontSize - 2);
+    });
+  
+    // Update other styles in localStorage
+    document.getElementById('style-form').addEventListener('change', function() {
+      const fontStyle = document.getElementById('font-style').value;
+      const fontColor = document.getElementById('font-color').value;
+      const backgroundColor = document.getElementById('background-color').value;
+  
+      localStorage.setItem('fontStyle', fontStyle);
+      localStorage.setItem('fontColor', fontColor);
+      localStorage.setItem('backgroundColor', backgroundColor);
+    });
+  
+    // Load the saved font size from localStorage (if available)
+    window.onload = function() {
+      const savedFontSize = localStorage.getItem('fontSize');
+      if (savedFontSize) {
+        currentFontSize = parseInt(savedFontSize);
+        fontSizeDisplay.textContent = savedFontSize;
+      }
+    };
+  </script>
+  
+
+
+
+        <div id="verses-container" class="row mb-2">
+            <div class="col-6">
+                <a href="/verse_present/?book=Genesis&chapter=1&versecount=1" class="verse-link">
+                    Tamil Verse 1: In the beginning God created the heaven and the earth.
+                </a>
+            </div>
+            <div class="col-6">
+                <a href="/verse_present/?book=Genesis&chapter=1&versecount=1" class="verse-link">
+                    KJV Verse 1: In the beginning God created the heaven and the earth.
+                </a>
+            </div>
+        </div>
+        
+
+        
+        
+
+    </div>
+
+
+    <!-- javascript 10-01-2024 -->
+    <script>
+        // Fetch chapters based on the selected book
+        function fetchChapters() {
+            const book = document.getElementById('book').value;
+            const chapterSelect = document.getElementById('chapter');
+            chapterSelect.innerHTML = '<option value="" disabled selected>Select Chapter</option>'; // Clear previous options
+
+            if (book) {
+                fetch(`/get-chapters/${book}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.chapters.forEach(chapter => {
+                            const option = document.createElement('option');
+                            option.value = chapter;
+                            option.innerText = chapter;
+                            chapterSelect.appendChild(option);
+                        });
+                    });
+            }
+        }
+
+        // ####################### seperate kjv and tamil verse seperate colomn
+
+function fetchVerseCounts() {
+    const book = document.getElementById('book').value;
+    const chapter = document.getElementById('chapter').value;
+    const verseSelect = document.getElementById('versecount');
+    const versesContainer = document.getElementById('verses-container');
+
+    verseSelect.innerHTML = '<option value="" disabled selected>Select Verse</option>'; // Clear previous options
+    versesContainer.innerHTML = ''; // Clear previous verses content
+
+    if (book && chapter) {
+        fetch(`/get-versecounts/${book}/${chapter}/`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched versecounts:', data.versecounts);
+
+                if (data.versecounts.length > 0) {
+                    // Create two separate divs for Tamil and KJV verses
+                    const tamilColumn = document.createElement('div');
+                    tamilColumn.classList.add('col-6');
+
+                    const kjvColumn = document.createElement('div');
+                    kjvColumn.classList.add('col-6');
+
+                    // Loop through verses and populate Tamil and KJV columns
+                    data.versecounts.forEach(item => {
+                        
+                        // Create an option in the versecount dropdown
+                        const option = document.createElement('option');
+                        option.value = item.versecount;
+                        option.innerText = `${item.versecount}`;
+                        verseSelect.appendChild(option);
+
+                        const tamilVerseLink = document.createElement('a');
+                        tamilVerseLink.href = `/verse_present/?book=${book}&chapter=${chapter}&versecount=${item.versecount}`;
+                        tamilVerseLink.target = 'blank';
+                        tamilVerseLink.innerText = `Tamil Verse ${item.versecount}: ${item.verse}`;
+                        tamilVerseLink.classList.add('verse-link');
+                        tamilColumn.appendChild(tamilVerseLink);
+                        // Append <br> after Tamil verse
+                        tamilColumn.appendChild(document.createElement('br'));
+
+                        const kjvVerseLink = document.createElement('a');
+                        kjvVerseLink.href = `/verse_present/?book=${book}&chapter=${chapter}&versecount=${item.versecount}`;
+                        kjvVerseLink.target = 'blank';
+                        kjvVerseLink.innerText = `KJV Verse ${item.versecount}: ${item.kjv}`;
+                        kjvVerseLink.classList.add('verse-link');
+                        kjvColumn.appendChild(kjvVerseLink);
+                        // Append <br> after KJV verse
+                        kjvColumn.appendChild(document.createElement('br'));
+                    });
+
+                    // Create a row container and append the columns
+                    const verseRow = document.createElement('div');
+                    verseRow.classList.add('row', 'mb-2');
+
+                    verseRow.appendChild(tamilColumn);
+                    verseRow.appendChild(kjvColumn);
+
+                    // Append the row to the main verses container
+                    versesContainer.appendChild(verseRow);
+                } else {
+                    versesContainer.innerHTML = '<p>No verses found for this chapter.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching verses:', error);
+            });
+    }
+}
+// 17-01-25 
+// Fetch and display selected verse details (Tamil and KJV) based on selected verse
+// function fetchSelectedVerse() {
+//         const book = document.getElementById('book').value;
+//         const chapter = document.getElementById('chapter').value;
+//         const versecount = document.getElementById('versecount').value;
+//         const versesContainer = document.getElementById('verses-container');
+
+//         if (book && chapter && versecount) {
+//             fetch(`/get-verse-details/${book}/${chapter}/${versecount}/`)
+//                 .then(response => response.json())
+//                 .then(data => {
+//                     versesContainer.innerHTML = ''; // Clear previous verses content
+
+//                     const verseContent = document.createElement('div');
+//                     verseContent.classList.add('col-12');
+
+//                     // Display Tamil and KJV verses side by side
+//                     verseContent.innerHTML = `
+//                         <h3>Verse ${versecount}</h3>
+//                         <div class="row">
+//                             <div class="col-6">
+//                                 <strong>Tamil Verse:</strong>
+//                                 <p>${data.tamil}</p>
+//                             </div>
+//                             <div class="col-6">
+//                                 <strong>KJV Verse:</strong>
+//                                 <p>${data.kjv}</p>
+//                             </div>
+//                         </div>
+//                     `;
+//                     versesContainer.appendChild(verseContent);
+//                 })
+//                 .catch(error => {
+//                     console.error('Error fetching verse details:', error);
+//                 });
+//         }
+//     }
+
+
+// // Function to send styles to localStorage
+// function applyStyles(fontStyle, backgroundColor) {
+//             // Save the selected styles to localStorage
+//             localStorage.setItem('fontStyle', fontStyle);
+//             localStorage.setItem('backgroundColor', backgroundColor);
+//         }
+
+
+// 18-01-25
+function fetchSelectedVerse() {
+    const book = document.getElementById('book').value;
+    const chapter = document.getElementById('chapter').value;
+    const versecount = document.getElementById('versecount').value;
+    const versesContainer = document.getElementById('verses-container');
+
+    if (book && chapter && versecount) {
+        fetch(`/get-verse-details/${book}/${chapter}/${versecount}/`)
+            .then(response => response.json())
+            .then(data => {
+                versesContainer.innerHTML = ''; // Clear previous verses content
+
+                const verseContent = document.createElement('div');
+                verseContent.classList.add('col-12');
+
+                // Create a row to display Tamil and KJV verses side by side
+                const verseRow = document.createElement('div');
+                verseRow.classList.add('row');
+
+                // Create Tamil Verse Link
+                const tamilColumn = document.createElement('div');
+                tamilColumn.classList.add('col-6');
+
+                const tamilVerseLink = document.createElement('a');
+                tamilVerseLink.href = `/verse_present/?book=${book}&chapter=${chapter}&versecount=${versecount}`;
+                tamilVerseLink.target = 'blank'; // Open in a new tab
+                tamilVerseLink.innerText = `Tamil Verse ${versecount}: ${data.tamil}`; // Display Tamil verse
+                tamilVerseLink.classList.add('verse-link');
+                tamilColumn.appendChild(tamilVerseLink);
+                tamilColumn.appendChild(document.createElement('br')); // Add line break after the link
+
+                // Create KJV Verse Link
+                const kjvColumn = document.createElement('div');
+                kjvColumn.classList.add('col-6');
+
+                const kjvVerseLink = document.createElement('a');
+                kjvVerseLink.href = `/verse_present/?book=${book}&chapter=${chapter}&versecount=${versecount}`;
+                kjvVerseLink.target = 'blank'; // Open in a new tab
+                kjvVerseLink.innerText = `KJV Verse ${versecount}: ${data.kjv}`; // Display KJV verse
+                kjvVerseLink.classList.add('verse-link');
+                kjvColumn.appendChild(kjvVerseLink);
+                kjvColumn.appendChild(document.createElement('br')); // Add line break after the link
+
+                // Append the Tamil and KJV columns to the row
+                verseRow.appendChild(tamilColumn);
+                verseRow.appendChild(kjvColumn);
+
+                // Append the row to the verses container
+                verseContent.appendChild(verseRow);
+                versesContainer.appendChild(verseContent);
+            })
+            .catch(error => {
+                console.error('Error fetching verse details:', error);
+            });
+    }
+}
+
+
+</script>
+
+</body>
+
+</html>

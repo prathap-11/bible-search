@@ -39,12 +39,12 @@ class TaxonomyBibleStudyAdmin(admin.ModelAdmin):
     list_display=('add_taxonomy',)
     search_fields=('add_taxonomy',)
 
-class AuthorAdmin(admin.ModelAdmin):
+class AuthorAdmin(ImportExportModelAdmin):
     list_display=('add_author',)
     search_fields=('add_author',)
 
-class AuthormessageAdmin(admin.ModelAdmin):
-    list_display=('title','author',)
+class AuthormessageAdmin(ImportExportModelAdmin):
+    list_display=('title','author','url')
     search_fields=('title','author',)
 
 admin.site.register(TaxonomyBibleStudy,TaxonomyBibleStudyAdmin)
