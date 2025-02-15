@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bible_reference_all</title>
+</head>
+<body>
+    <h1 style="text-align:center">Bible Reference</h1>
+    <div class="container">
+        <div class="grid">
+            {% for reference in all_reference %}
+            <div class="card">
+                <h3>{{ reference.title }}</h3>
+                <p> {{ reference.message|truncatewords:5 }} </p>  <!-- Truncate the message to avoid long text -->
+                <a href="{% url 'reference_detail' reference.url %}">Read More</a>
+                <p class="author">{{ reference.author.add_author }}</p>  <!-- Assuming `add_author` is a field of the `Author` model -->
+            </div>
+            {% endfor %}
+        
+            <!-- <button style="    width: fit-content;
+    border: 1px;">View More</button> -->
+        </div>
+    </div>
+</body>
+{% endblock %}
+</html>

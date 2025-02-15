@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible References Tamil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+           
+        } 
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+     
+        .breadcrumb {
+            background: #ddd;
+    padding: 10px;
+    font-size: 14px;
+    width: 700px;
+    margin-left: 131px;
+}
+
+.devotions {
+    padding: 20px;
+    background: white;
+}
+
+h2 {
+    color: #222;
+}
+
+.devotion-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.devotion {
+   
+}
+
+.devotion h3 {
+    font-size: 18px;
+    color: #333;
+}
+
+.devotion p {
+    font-size: 14px;
+    color: #555;
+}
+
+.devotion a {
+    color: blue;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.view-more {
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    color: blue;
+}
+
+.most-viewed {
+    padding: 20px;
+    background: white;
+}
+    </style>
+</head>
+<body>
+  
+    <section class="breadcrumb">
+        <p>Tamil Bible Search / Bible Study and Devotions</p>
+    </section>
+
+    <section class="devotions" style="width: 100%; padding: 20px; text-align: center;">
+        <h2 style="font-weight: revert;
+        color: #040d1e;
+        text-align: center;
+        font-size: 35px;"> Bible kavithaigal</h2>
+        <div class="devotion-container" style="margin-top: -69px;padding: 126px;display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px;">
+            {% for kavithai in all_kavithai %}
+            <div class="devotion" style="width: 23%;     border-bottom: 1px solid lightgray; text-align: left;">
+                <h3 style="    font-size: 2rem;
+                font-weight: bolder;
+                margin-bottom: 10px;margin-bottom: 10px;">{{ kavithai.title }}</h3>
+                <p style="font-size: 14px; color: #555;">{{ kavithai.message|truncatewords:5 }}</p>
+                <a href="{% url 'kavithai_detail' kavithai.url %}" style="display: inline-block;  color: red;  text-decoration: none; border-radius: 3px;">Read More</a>
+                <p class="author" style="font-size: smaller;color: blue; margin-top: 10px;">{{ kavithai.author.add_author }}</p>
+            </div>
+            {% endfor %}
+        </div>
+      
+    </section>
+
+   
+    
+    <footer style="background: #333; color: white; text-align: center; padding: 15px 10px; width: 100%;">
+        <p style="margin: 5px 0;">&copy; 2024 YourCompany. All Rights Reserved.</p>
+        <div style="margin-top: 5px;">
+            <a href="#" style="color: white; text-decoration: none; margin: 0 10px;">Privacy Policy</a> |
+            <a href="#" style="color: white; text-decoration: none; margin: 0 10px;">Terms of Use</a>
+        </div>
+    </footer>
+    
+    {% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible References Tamil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+           
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .container {
+            width: 90%;
+            margin: 20px auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+           
+            /* padding: 15px;
+            
+            text-align: left; */
+            padding: 15px;
+    text-align: left;
+    border: navajowhite;
+    background-color: white;
+    box-shadow: none;
+           
+        }
+
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .card p {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .card a {
+            text-decoration: none;
+            font-size: 14px;
+            color: #007BFF;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .card a:hover {
+            text-decoration: underline;
+        }
+
+        .card .author {
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+  
+    <h1 style="text-align:center">Latest Reference</h1>
+    <div class="container">
+        <div class="grid">
+            {% for reference in latest_referenes %}
+            <div class="card">
+                <h3>{{ reference.title }}</h3>
+                <p> {{ reference.message|truncatewords:5 }} </p>  <!-- Truncate the message to avoid long text -->
+                <a href="{% url 'reference_detail' reference.url %}">Read More</a>
+                <p class="author">{{ reference.author.add_author }}</p>  <!-- Assuming `add_author` is a field of the `Author` model -->
+            </div>
+            {% endfor %}
+            <a style="display: inline-block; width: fit-content; border: 1px solid;" href="{% url 'all_reference' %}">View more</a>
+
+        </div>
+    </div>
+
+    <h1 style="text-align:center">Most Viewed</h1>
+<div class="container">
+    <div class="grid">
+        {% for reference in most_viewed_references %}
+        <div class="card">
+            <h3>{{ reference.title }}</h3>
+            <p> {{ reference.message|truncatewords:5 }} </p>  <!-- Truncate the message to avoid long text -->
+            <a href="{% url 'reference_detail' reference.url %}">Read More</a>
+            <p class="author">- {{ reference.author.add_author }}</p>  <!-- Assuming `add_author` is a field of the `Author` model -->
+        </div>
+        {% endfor %}
+        <a style="display: inline-block; width: fit-content; border: 1px solid;" href="{% url 'all_reference' %}">View more</a>
+
+    </div>
+</div>
+
+
+
+</body>
+
+{% endblock %}
+</html>

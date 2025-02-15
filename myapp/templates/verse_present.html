@@ -11,18 +11,18 @@
     </head>
     <body>
         <!-- verse_present.html -->
-<div id="verses-container">
-    {% for verse in verse_details %}
-        <h2 class="card-title">
-            {{ book }}({{ verse.tamilname }}) {{ chapter }}:{{ verse.versecount }}
-        </h2>
-        <p>{{ verse.verse }}</p>
-        <p>{{ verse.kjv }}</p>
-    {% empty %}
-        <p>No verse found. Please make sure you entered valid book, chapter, and verse.</p>
-    {% endfor %}
-</div>
-
+        <div id="verses-container" style="display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; flex-direction: column; font-family: Arial, sans-serif;background-color: white;">
+            {% for verse in verse_details %}
+                <h2 class="card-title" style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">
+                    {{ book }} ({{ verse.tamilname }}) {{ chapter }}:{{ verse.versecount }}
+                </h2>
+                <p style="font-size: 18px; margin-bottom: 8px;">{{ verse.verse }}</p>
+                <p style="font-size: 18px; margin-bottom: 20px; color: #555;">{{ verse.kjv }}</p>
+            {% empty %}
+                <p style="font-size: 18px; color: #888;">No verse found. Please make sure you entered valid book, chapter, and verse.</p>
+            {% endfor %}
+        </div>
+        
 <!-- Fullscreen Toggle Button -->
 <button id="fullscreenBtn" class="btn btn-primary">Go Fullscreen</button>
 
@@ -99,6 +99,83 @@
       // Apply the styles to the content within #verses-container
       applyStylesToPage(fontStyle, fontSize, fontColor, backgroundColor);
   };
+</script>
+
+<script>
+    // Establish WebSocket connection
+    const socket = new WebSocket('ws://' + window.location.host + '/ws/verse/');
+
+    // When connected to WebSocket
+    socket.onopen = function(event) {
+        console.log("WebSocket connection established!");
+    };
+
+    // When a message is received
+    socket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        // Update the verse display based on the received data
+        updateVersePresent(data.book, data.chapter, data.versecount, data.verse_details);
+    };
+
+    // Function to update 'verse_present.html' dynamically
+    function updateVersePresent(book, chapter, versecount, verseDetails) {
+        // Get the container where the verses are displayed
+        const versesContainer = document.getElementById('verses-container');
+        versesContainer.innerHTML = '';  // Clear the current content
+        
+        // Check if there are verse details received
+        if (verseDetails && verseDetails.length > 0) {
+            // Loop through the verse details and create new HTML elements for each
+            verseDetails.forEach(verse => {
+                const verseElement = document.createElement('div');
+                verseElement.style.marginBottom = '20px';  // Add space between verses
+                
+                // Create the heading for the book, chapter, and verse count
+                const verseHeader = document.createElement('h2');
+                verseHeader.className = 'card-title';
+                verseHeader.style.fontSize = '24px';
+                verseHeader.style.fontWeight = 'bold';
+                verseHeader.style.marginBottom = '10px';
+                verseHeader.textContent = `${book} (${verse.tamilname}) ${chapter}:${verse.versecount}`;
+                verseElement.appendChild(verseHeader);
+
+                // Create the verse text
+                const verseText = document.createElement('p');
+                verseText.style.fontSize = '18px';
+                verseText.style.marginBottom = '8px';
+                verseText.textContent = verse.verse;
+                verseElement.appendChild(verseText);
+
+                // Create the KJV translation text
+                const kjvText = document.createElement('p');
+                kjvText.style.fontSize = '18px';
+                kjvText.style.marginBottom = '20px';
+                kjvText.style.color = '#555';
+                kjvText.textContent = verse.kjv;
+                verseElement.appendChild(kjvText);
+
+                // Append the created verse element to the verses container
+                versesContainer.appendChild(verseElement);
+            });
+        } else {
+            // If no verses found, show the "no verse found" message
+            const noVerseMessage = document.createElement('p');
+            noVerseMessage.style.fontSize = '18px';
+            noVerseMessage.style.color = '#888';
+            noVerseMessage.textContent = 'No verse found. Please make sure you entered valid book, chapter, and verse.';
+            versesContainer.appendChild(noVerseMessage);
+        }
+    }
+
+    // Handle WebSocket closure
+    socket.onclose = function(event) {
+        if (event.wasClean) {
+            console.log("Closed cleanly");
+        } else {
+            console.error("Connection error");
+        }
+    };
+
 </script>
 
     </body>

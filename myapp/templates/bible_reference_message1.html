@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bible_reference_message</title>
+</head>
+<body>
+    <h1>{{ reference.title }}</h1>
+    
+    <p><strong>Message:</strong> {{ reference.message|safe }}</p><br>  <!-- The |safe filter renders HTML -->
+
+    <p><strong>Author:</strong> {{ reference.author.add_author }}</p>
+</body>
+{% endblock %}
+</html>

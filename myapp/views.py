@@ -2,11 +2,70 @@
 from django.shortcuts import render, redirect
 from .models import BibleDb,OldTestamentBook,NewTestamentBook
 
+from .models import Prasanga_Kuripugal
+def tamil_christian_sermons(request):
+    books = BibleDb.objects.values('tamilname').distinct()
+    # Retrieve the 8 most recent records from the model
+    latest_sermons = Prasanga_Kuripugal.objects.all().order_by('-id')[:8]
+    # Retrieve the 8 most viewed messages, ordered by view_count
+    most_viewed_sermons = Prasanga_Kuripugal.objects.all().order_by('-view_count')[:8]
+    context = {
+        'books': books,
+        'title': 'Tamil Bible Study',
+        'latest_sermons': latest_sermons,  # Pass the latest 8 records to the template
+        'most_viewed_sermons': most_viewed_sermons,  # Pass the most viewed records to the template
+    }
+    return render(request, 'tamil_christian_sermons.html', context)
+
+from django.shortcuts import render, get_object_or_404
+def tamil_sermon_view(request,url):
+    books = BibleDb.objects.values('tamilname').distinct()
+    # Use get_object_or_404 to fetch the Authormessage object by its URL
+    prasangam_sermon = get_object_or_404(Prasanga_Kuripugal, url=url)
+    # Pass the sermon object and modified message to the template
+    return render(request, 'tamil_sermon_message.html', {'prasangam_sermon': prasangam_sermon,'books':books })
+
+def all_sermon(request):
+    books = BibleDb.objects.values('tamilname').distinct()
+    all_sermon=Prasanga_Kuripugal.objects.all().order_by('-id')
+    return render(request, 'tamil_sermon_all.html', {'all_sermon' : all_sermon,'books': books } )
+
+from .models import Bible_kavithaigal_tamil
+
+def bible_kavithaigal_tamil(request):
+    books = BibleDb.objects.values('tamilname').distinct()
+    # Retrieve the 8 most recent records from the model
+    latest_messages = Bible_kavithaigal_tamil.objects.all().order_by('-id')[:8]
+    # Retrieve the 8 most viewed messages, ordered by view_count
+    most_viewed_messages = Bible_kavithaigal_tamil.objects.all().order_by('-view_count')[:8]
+    context = {
+        'books': books,
+        'title': 'Tamil Bible Study',
+        'latest_messages': latest_messages,  # Pass the latest 8 records to the template
+        'most_viewed_messages': most_viewed_messages,  # Pass the most viewed records to the template
+    }
+    return render(request, 'bible_kavithaigal_tamil.html', context)
+
+from django.shortcuts import render, get_object_or_404
+def kavithai_view(request,url):
+    books = BibleDb.objects.values('tamilname').distinct()
+    # Use get_object_or_404 to fetch the Authormessage object by its URL
+    kavithai = get_object_or_404(Bible_kavithaigal_tamil, url=url)
+    # Pass the sermon object and modified message to the template
+    return render(request, 'bible_kavithai_message.html', {'kavithai': kavithai,'books':books })
+
+def all_kavithai(request):
+    books = BibleDb.objects.values('tamilname').distinct()
+    all_kavithai=Bible_kavithaigal_tamil.objects.all().order_by('-id')
+    return render(request, 'bible_kavithaigal_all.html', {'all_kavithai' : all_kavithai,'books': books } )
 
 
 from .models import Authormessage
 
 def tamil_bible_study(request):
+
+    books = BibleDb.objects.values('tamilname').distinct()
+
     # Retrieve the 8 most recent records from the Authormessage model
     latest_messages = Authormessage.objects.all().order_by('-id')[:8]
 
@@ -14,11 +73,40 @@ def tamil_bible_study(request):
     most_viewed_messages = Authormessage.objects.all().order_by('-view_count')[:8]
     
     context = {
+        'books': books,
         'title': 'Tamil Bible Study',
         'latest_messages': latest_messages,  # Pass the latest 8 records to the template
         'most_viewed_messages': most_viewed_messages,  # Pass the most viewed records to the template
     }
     return render(request, 'tamil_bible_study.html', context)
+
+def bible_reference_tamil(request):
+    books = BibleDb.objects.values('tamilname').distinct()
+    
+    # Retrieve the 8 most recent records from the Bible_reference model
+    latest_referenes = Bible_reference.objects.all().order_by('-id')[:8]
+
+    # Retrieve the 8 most viewed messages, ordered by view_count
+    most_viewed_references = Bible_reference.objects.all().order_by('-view_count')[:8]
+    
+    context = {
+        'books': books,
+        'title': 'Tamil Bible Study',
+        'latest_referenes': latest_referenes,  # Pass the latest 8 records to the template
+        'most_viewed_references': most_viewed_references,  # Pass the most viewed records to the template
+    }
+    return render(request, 'bible_reference_tamil.html', context )
+
+def all_reference(request):
+    books= BibleDb.objects.values('tamilname').distinct()
+    all_reference=Bible_reference.objects.all().order_by('-id')
+    return render(request, 'bible_reference_all.html', {'all_reference' : all_reference,'books': books } )
+
+def all_devotions(request):
+    books= BibleDb.objects.values('tamilname').distinct()
+    all_devotions=Authormessage.objects.all().order_by('-id')
+    return render(request,'bible_devotions_all.html',{'all_devotions' : all_devotions,'books': books })
+
 
 
 
@@ -1515,6 +1603,14 @@ def verse_detail_by_wordenglish(request, word):
         "books": books
     })
 
+########################################## tamil_bible_reference_view
+from .models import Bible_reference,BibleDb
+from django.shortcuts import render, get_object_or_404
+
+def reference_view(request,url):
+    books = BibleDb.objects.values('tamilname').distinct()
+    reference = get_object_or_404(Bible_reference,url=url)
+    return render(request, 'bible_reference_message.html', {'reference': reference,'books' : books,})
 
 ############################################ tamil_bible_message
 
@@ -1523,6 +1619,8 @@ from django.shortcuts import render, get_object_or_404
 from .models import Authormessage, BibleDb
 
 def sermon_view(request, url):
+
+    books=BibleDb.objects.values('tamilname').distinct()
     # Use get_object_or_404 to fetch the Authormessage object by its URL
     sermon = get_object_or_404(Authormessage, url=url)
     
@@ -1601,7 +1699,8 @@ def sermon_view(request, url):
         modified_message = ""
 
     # Pass the sermon object and modified message to the template
-    return render(request, 'sermon.html', {'sermon': sermon, 'modified_message': modified_message})
+    return render(request, 'sermon.html', {'sermon': sermon, 'modified_message': modified_message,'books':books })
+
 
 # import re
 # from django.shortcuts import render, get_object_or_404
@@ -1942,39 +2041,86 @@ from django.http import JsonResponse
 from .models import BibleDb
 
 # View to fetch versecounts, verses and kjv based on the selected book and chapter
-def get_versecounts(request, bookname, chapter):
-    # Fetch versecounts, verses, and kjv content
-    verses_data = BibleDb.objects.filter(bookname=bookname, chapter=chapter).values('versecount', 'verse', 'kjv').distinct()
-    for i in verses_data:
-        print('versecount',i)
+# def get_versecounts(request, bookname, chapter):
+#     # Fetch versecounts, verses, and kjv content
+#     verses_data = BibleDb.objects.filter(bookname=bookname, chapter=chapter).values('versecount', 'verse', 'kjv').distinct()
+#     for i in verses_data:
+#         print('versecount',i)
         
 
-    # Structure the response
+#     # Structure the response
+#     verse_info = [
+#         {
+#             'versecount': item['versecount'],
+#             'verse': item['verse'],
+#             'kjv': item['kjv']
+#         }
+#         for item in verses_data
+#     ]
+#     return JsonResponse({'versecounts': verse_info})
+
+# 08-02-2025 update regarding open in new tab search_form
+
+def get_versecounts(request, bookname, chapter):
+    # Fetch versecounts, verses, and kjv content, along with bookname, chapter, and tamilname
+    verses_data = BibleDb.objects.filter(bookname=bookname, chapter=chapter).values(
+        'versecount', 'verse', 'kjv', 'bookname', 'chapter', 'tamilname').distinct()
+
+    # Print out for debugging
+    # for i in verses_data:
+    #     print('versecount', i)
+
+    # Structure the response with the additional fields (bookname, chapter, tamilname)
     verse_info = [
         {
             'versecount': item['versecount'],
             'verse': item['verse'],
-            'kjv': item['kjv']
+            'kjv': item['kjv'],
+            'bookname': item['bookname'],
+            'chapter': item['chapter'],
+            'tamilname': item['tamilname'],
         }
         for item in verses_data
     ]
+    
+    # Return the response as a JSON
     return JsonResponse({'versecounts': verse_info})
 
 # View to fetch verse details for a given book, chapter, and versecount
+# def get_verse_details(request, bookname, chapter, versecount):
+#     verse_data = BibleDb.objects.filter(
+#         bookname=bookname,
+#         chapter=chapter,
+#         versecount=versecount
+#     ).values('verse', 'kjv').first()
+
+#     if verse_data:
+#         return JsonResponse({
+#             'tamil': verse_data['verse'],
+#             'kjv': verse_data['kjv']
+#         })
+#     else:
+#         return JsonResponse({'error': 'Verse not found'}, status=404)
+
+# 13-02-2025 bookname undefine issue fixed
+
 def get_verse_details(request, bookname, chapter, versecount):
     verse_data = BibleDb.objects.filter(
         bookname=bookname,
         chapter=chapter,
         versecount=versecount
-    ).values('verse', 'kjv').first()
+    ).values('bookname', 'tamilname', 'verse', 'kjv').first()
 
     if verse_data:
         return JsonResponse({
+            'bookname': verse_data['bookname'],   # Added
+            'tamilname': verse_data['tamilname'], # Added
             'tamil': verse_data['verse'],
             'kjv': verse_data['kjv']
         })
     else:
         return JsonResponse({'error': 'Verse not found'}, status=404)
+
 
     # # View to fetch versecounts based on the selected book and chapter
 # def get_versecounts(request, bookname, chapter):
@@ -1983,13 +2129,299 @@ def get_verse_details(request, bookname, chapter, versecount):
 
 
 # views.py
-from django.shortcuts import render
+# from django.shortcuts import render
+
+# def home(request):
+#     # Get fullscreen state from session, or default to False
+#     is_fullscreen = request.session.get('isFullscreen', False)
+#     return render(request, 'home.html', {'is_fullscreen': is_fullscreen})
+#10-02-2025
+
+
+# pyqt6 for secondary screen #######################
+
+# views.py
+# from django.shortcuts import render
+
+# def home(request):
+#     data = "Some data to display"  # Example data
+#     return render(request, 'index.html', {'data': data})
+
+# # views.py
+# from django.http import JsonResponse
+
+# # Example data that you want to send in response
+# data = {
+#   "book": "Genesis",
+#   "tamilname":"ஆதியாகமம்",
+#   "chapter": 1,
+#   "verse": 1,
+#   "english": "In the beginning God created the heavens and the earth.",
+#   "tamil": "ஆரம்பத்தில் தேவன் வானத்தையும் பூமியையும் படைத்தார்."
+# }
+
+
+# def view_data(request):
+#     # Returning data as a JSON response
+#     return JsonResponse(data)
+############################################################
+#query parameters book,chapter,verse
+
+# def home(request):
+#     books = BibleDb.objects.values('bookname').distinct()
+#     data = "Some data to display"  # Example data
+#     return render(request, 'index.html', {'data': data,'books': books,})
+
+# from django.http import JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
+# from .models import BibleDb  # Assuming you have a BibleVerse model
+
+# @csrf_exempt
+# def view_data(request):
+#     book = request.GET.get('book', '')
+#     chapter = request.GET.get('chapter', '')
+#     verse = request.GET.get('verse', '')
+
+#     try:
+#         verse_data = BibleDb.objects.get(bookname=book, chapter=chapter, versecount=verse)
+#         response_data = {
+#             "book": verse_data.bookname,
+#             "tamilname": verse_data.tamilname,
+#             "chapter": verse_data.chapter,
+#             "verse": verse_data.versecount,
+#             "english": verse_data.kjv,
+#             "tamil": verse_data.verse
+#         }
+#         return JsonResponse(response_data)
+#     except BibleDb.DoesNotExist:
+#         return JsonResponse({"error": "Verse not found"}, status=404)
+
+##########################################################
+# 12-02-2025 fetch by timer controller and presenter
 
 def home(request):
-    # Get fullscreen state from session, or default to False
-    is_fullscreen = request.session.get('isFullscreen', False)
-    return render(request, 'home.html', {'is_fullscreen': is_fullscreen})
+    books = BibleDb.objects.values('bookname').distinct()
+    data = "Some data to display"  # Example data
+    return render(request, 'indexpyqt6.html', {'data': data,'books': books,})
 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import BibleDb, UserSelection
+
+@csrf_exempt
+def view_data(request):
+    book = request.GET.get('book', '')
+    chapter = request.GET.get('chapter', '')
+    verse = request.GET.get('verse', '')
+
+    try:
+        # Store the user selection in the database
+        UserSelection.objects.all().delete()  # Clear previous selection
+        UserSelection.objects.create(bookname=book, chapter=chapter, verse=verse)
+
+        verse_data = BibleDb.objects.get(bookname=book, chapter=chapter, versecount=verse)
+        response_data = {
+            "book": verse_data.bookname,
+            "tamilname": verse_data.tamilname,
+            "chapter": verse_data.chapter,
+            "verse": verse_data.versecount,
+            "english": verse_data.kjv,
+            "tamil": verse_data.verse
+        }
+        return JsonResponse(response_data)
+    except BibleDb.DoesNotExist:
+        return JsonResponse({"error": "Verse not found"}, status=404)
+
+def get_latest_selection(request):
+    """ API to return the latest selected book, chapter, and verse """
+    latest_selection = UserSelection.objects.last()
+    if latest_selection:
+        return JsonResponse({
+            "book": latest_selection.bookname,
+            "chapter": latest_selection.chapter,
+            "verse": latest_selection.verse
+        })
+    return JsonResponse({"error": "No selection found"}, status=404)
+
+
+##########################################################
+
+# from django.http import JsonResponse
+
+
+
+
+# from django.shortcuts import render
+# from django.http import JsonResponse
+# from .models import BibleDb  # Assuming you have this model
+
+# # Home view to display initial data
+# def home(request):
+#     data = "Some data to display"  # Example data
+#     return render(request, 'index.html', {'data': data})
+
+# # View to fetch verse data based on book and chapter
+# def fetch_verse(request, book, chapter):
+#     try:
+#         # Query the database for the verse based on book and chapter
+#         verse_data = BibleDb.objects.filter(book=book, chapter=chapter).first()
+        
+#         if verse_data:
+#             # Return Tamil and KJV versions of the verse
+#             return JsonResponse({
+#                 'tamil_verse': verse_data.verse,  # Assuming verse is Tamil
+#                 'kjv_verse': verse_data.kjv  # Assuming KJV is in kjv field
+#             })
+#         else:
+#             return JsonResponse({'error': 'Verse not found'}, status=404)
+    
+#     except Exception as e:
+#         return JsonResponse({'error': str(e)}, status=500)
+
+# # View to send data to PyQt6 (this will be handled by the pyqt6_app.py)
+# import json
+# from django.http import JsonResponse
+# import requests
+
+# def send_to_pyqt6(request):
+#     if request.method == 'POST':
+#         try:
+#             data = json.loads(request.body)
+#             tamil_verse = data.get('tamil_verse')
+#             kjv_verse = data.get('kjv_verse')
+
+#             # Send the verse data to the PyQt6 app
+#             pyqt6_url = 'http://127.0.0.1:5000/display-data'  # PyQt6 API endpoint
+#             response = requests.post(pyqt6_url, json={
+#                 'tamil_verse': tamil_verse,
+#                 'kjv_verse': kjv_verse
+#             })
+
+#             if response.status_code == 200:
+#                 return JsonResponse({'message': 'Data sent to PyQt6 successfully'})
+#             else:
+#                 return JsonResponse({'error': 'Failed to send data to PyQt6'}, status=500)
+
+#         except Exception as e:
+#             return JsonResponse({'error': str(e)}, status=500)
+#     return JsonResponse({'error': 'Invalid request'}, status=400)
+############################################################
+
+#11-02-2025
+
+# import requests
+# from django.shortcuts import render
+# from django.http import JsonResponse
+# from .models import BibleDb
+
+# def home(request):
+#     return render(request, 'index.html', {"initial_data": "Some data to display"})
+
+# def view_data(request):
+#     return JsonResponse({'data': 'Updated data from backend'})
+
+
+# def fetch_verse(request, book, chapter):
+#     try:
+#         verse = BibleDb.objects.filter(book=book, chapter=chapter).first()
+#         if verse:
+#             return JsonResponse({
+#                 "tamil_version": verse.verse,
+#                 "kjv_version": verse.kjv
+#             })
+#         else:
+#             return JsonResponse({"error": "Verse not found"}, status=404)
+#     except Exception as e:
+#         return JsonResponse({"error": str(e)}, status=500)
+
+###################################################################
+
+# import requests
+# from django.shortcuts import render
+# from django.http import JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
+# import json
+# from .models import BibleDb
+
+# def home(request):
+#     return render(request, 'index.html', {"initial_data": "Some data to display"})
+
+# def view_data(request):
+#     return JsonResponse({'data': 'Updated data from backend'})
+
+# def fetch_verse(request, book, chapter):
+#     try:
+#         verse = BibleDb.objects.filter(book=book, chapter=chapter).first()
+#         if verse:
+#             return JsonResponse({
+#                 "tamil_version": verse.verse,
+#                 "kjv_version": verse.kjv
+#             })
+#         else:
+#             return JsonResponse({"error": "Verse not found"}, status=404)
+#     except Exception as e:
+#         return JsonResponse({"error": str(e)}, status=500)
+
+# @csrf_exempt
+# def send_to_pyqt6(request):
+#     print('sendto pyqt6......')
+#     if request.method == "POST":
+#         try:
+#             data = json.loads(request.body)
+
+#             # Send data to Flask-based PyQt6 application
+#             response = requests.post("http://127.0.0.1:5000/display-data/", json=data)
+
+#             return JsonResponse({"status": "success", "flask_response": response.text})
+#         except Exception as e:
+#             return JsonResponse({"error": str(e)}, status=500)
+
+#     return JsonResponse({"error": "Invalid request"}, status=400)
+
+###################################################################
+# from django.views.decorators.csrf import csrf_exempt
+# import requests
+# from django.http import JsonResponse
+
+# @csrf_exempt  # Disable CSRF for this view
+# def send_to_pyqt6(request):
+#     if request.method == "POST":
+#         try:
+#             import json
+#             data = json.loads(request.body)  # Parse JSON request body
+
+#             # Forward data to Flask Server
+#             response = requests.post("http://127.0.0.1:5000/display-data/", json=data)
+            
+#             return JsonResponse({"status": "success", "response": response.text})
+#         except Exception as e:
+#             return JsonResponse({"error": str(e)}, status=500)
+
+#     return JsonResponse({"error": "Invalid request"}, status=400)
+
+# def send_to_pyqt6(request):
+#     if request.method == "POST":
+#         try:
+#             data = request.POST.dict()
+#             response = requests.post("http://127.0.0.1:5000/display-data/", json=data)
+#             return JsonResponse({"status": "success", "response": response.text})
+#         except Exception as e:
+#             return JsonResponse({"error": str(e)}, status=500)
+
+
+
+############################################################
+# views.py
+# from django.http import JsonResponse
+
+# def view_data(request):
+#     data = "i change it 2 times"  # Data to display
+#     return JsonResponse({'data': data})
+
+
+
+
+################################
 def set_fullscreen(request):
     # Update fullscreen state in session
     fullscreen = request.GET.get('fullscreen', 'false') == 'true'
@@ -2001,3 +2433,7 @@ from django.shortcuts import render
 
 def fullscreen_view(request):
     return render(request, 'fullscreen_page.html')
+
+
+def lobby(request):
+    return render(request,'lobby.html')

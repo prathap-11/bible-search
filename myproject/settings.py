@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,11 +40,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'myapp',
+    'pyqt6_app',
     'import_export',
     'ckeditor',
-    'ckeditor_uploader',
+    'ckeditor_uploader',     
 ]
 
+ASGI_APPLICATION = 'myproject.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -147,4 +157,14 @@ EMAIL_HOST_PASSWORD = "ccdf tuxh jdql xqcq"  # Your email password (use App pass
 DEFAULT_FROM_EMAIL = 'pratapanu11@gmail.com'  # Default from email address
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
+
+# settings.py
+# CHANNEL_LAYERS = {
+#     'default': {
+#         'BACKEND': 'channels_redis.core.RedisChannelLayer',
+#         'CONFIG': {
+#             "hosts": [('127.0.0.1', 6379)],  # Adjust if your Redis instance is running elsewhere
+#         },
+#     },
+# }
 

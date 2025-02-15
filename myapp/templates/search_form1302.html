@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tamilbiblesearch</title>
+    <style>
+       /* Global Styles */
+       body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 100%;
+            max-width: 25%;
+            background-color: #e0e0e0;
+            border-right: 1px solid #ccc;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        .sidebar h3 {
+            margin-top: 0;
+            font-size: 24px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .books {
+            margin-top: 20px;
+        }
+
+        .books select,
+        .books button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .books button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .books button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 30px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background-color: #f0f0f0;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #e8e8e8;
+            flex: 1;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .tab.active {
+            background-color: #fff;
+            border-bottom: none;
+        }
+
+        /* Recent Selection Section */
+        #recent-selection {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            padding: 20px;
+            background-color: #e6f7ff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: fit-content;
+            max-width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+
+        #recent-books-list {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        #recent-books-list li {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background-color: #ecf0f1;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #recent-books-list li:hover {
+            background-color: #dfe6e9;
+            transform: scale(1.05);
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            padding: 10px 20px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+           
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+        }
+
+        .navbar ul li {
+            margin-left: 20px;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            color: #ff6347;
+        }
+
+        /* Responsive Navbar */
+        @media screen and (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .navbar ul {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .navbar ul li {
+                margin: 10px 0;
+            }
+        }
+
+        /* Popup Modal */
+        #popupModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        #popupModal .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px 40px;
+            border-radius: 10px;
+            width: 350px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .popup-header h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Input fields in popup */
+        .popup-content label {
+            font-size: 14px;
+            color: #555;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            z-index: 1000;
+        }
+        .settings-modal .close-btn {
+            float: right;
+            cursor: pointer;
+            font-weight: bold;
+            color: red;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .verse {
+            margin: 10px 0;
+        }
+
+        .popup-content input,
+        .popup-content select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        /* Close Button */
+        .popup-footer button {
+            padding: 8px 16px;
+            background-color: #ff5c5c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .popup-footer button:hover {
+            background-color: #ff2a2a;
+        }
+        .sidebar {
+    position: fixed; /* Keeps the sidebar in place */
+    top: 0;
+    left: 0;
+    height: 100vh; /* Full viewport height */
+    width: 250px; /* Width of the sidebar */
+    overflow-y: auto; /* Enables vertical scrolling if the content exceeds the height */
+    background-color: #f4f4f4; /* Sidebar background color */
+    padding: 20px; /* Padding inside the sidebar */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional: Adds a shadow effect to the sidebar */
+}
+
+.books {
+    max-height: calc(100vh - 40px); /* Keeps books section within the sidebar height */
+    overflow-y: auto; /* Makes the books section scrollable if content exceeds the height */
+}
+
+#recent-selection {
+    margin-top: 20px;
+    font-weight: bold;
+    color: #333;
+    padding: 20px;
+    background-color: #e6f7ff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    height: auto; /* Adjust the height to content */
+    overflow-y: auto;
+}
+
+
+  /* Close button styles */
+ 
+
+  /* Form styling inside the popup */
+ 
+    </style>
+</head>
+
+<body>
+  
+
+
+
+    <!-- search_form.html -->
+    <div style="margin-left: 1018px;
+    margin-top: 8px;">
+      <button id="settingsBtn" class="btn btn-primary" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Settings</button>
+    </div>
+    <div class="container" >
+      <div class="sidebar">
+        <h3>Bible</h3>
+        <div class="books">
+        <form method="GET" action="{% url 'verse_present' %}" class="row g-3 justify-content-center" target="blank">
+            <!-- Book Dropdown -->
+            <div class="col-12 col-md-3">
+                <select id="book" name="book" class="form-select" required onchange="fetchChapters()">
+                    <option value="" disabled selected>Select a Book</option>
+                    {% for book in books %}
+                    <option value="{{ book.bookname }}" {% if book.bookname == request.GET.book %}selected{% endif %}>
+                        {{ book.bookname }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Chapter Dropdown (Dynamic) -->
+            <div class="col-12 col-md-4 d-flex gap-2">
+                <select id="chapter" name="chapter" class="form-select" required onchange="fetchVerseCounts()">
+                    <option value="" disabled selected>Select Chapter</option>
+                    <!-- Chapters will be populated by AJAX -->
+                </select>
+            </div>
+
+            <!-- Versecount Dropdown (Dynamic) -->
+            <div class="col-12 col-md-4 d-flex gap-2">
+                <select id="versecount" name="versecount" class="form-select" required onchange="fetchSelectedVerse()">
+                    <option value="" disabled selected>Select Verse</option>
+                    <!-- Versecounts will be populated by AJAX -->
+                </select>
+            </div>
+
+            <!-- Submit Button -->
+            <!-- <div class="col-12 col-md-2">
+                <button type="submit" class="btn">Search</button>
+            </div> -->
+        </form>
+    
+     </div>
+
+     <!-- Fullscreen Button (Add this to the search_form.html) -->
+<div style="margin-left: 1018px; margin-top: 8px;">
+    <button id="fullscreenBtn" class="btn btn-primary" style="padding: 10px 20px; background-color: #28a745; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Go Fullscreen</button>
+</div>
+
+
+
+<div id="recent-selection" style="margin-top: 20px; font-weight: bold; color: #333; padding: 20px; background-color: #e6f7ff; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); width: fit-content; max-width: 80%; margin-left: auto; margin-right: auto; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center;">
+  Recently Selected Books:
+  <ul id="recent-books-list" style="list-style: none; padding: 0; margin: 10px 0 0 0; font-size: 14px; line-height: 1.6; color: #555;">
+      <!-- Dynamically added book list items will go here -->
+  </ul>
+</div>
+</div>
+ 
+</div>
+       
+
+  
+
+     
+  
+  
+<!-- settingsPopup (same as before, no Apply Settings button) -->
+<div id="settingsPopup" class="settings-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center;">
+    <div class="popup-content" style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); width: 300px; text-align: center; position: relative;">
+        <span id="closePopup" class="close-popup" style="position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 18px; font-weight: bold;">&times;</span>
+        <h3 style="font-family: Arial, sans-serif; font-size: 18px; margin-bottom: 20px;">Customize Font</h3>
+        
+        <!-- Font Color -->
+        <label for="fontColor" style="font-family: Arial, sans-serif; font-size: 14px; display: block; margin-bottom: 5px;">Font Color:</label>
+        <input type="color" id="fontColor" name="fontColor" style="width: 100%; margin-bottom: 15px;"><br>
+  
+        <!-- Font Size -->
+        <label for="fontSize" style="font-family: Arial, sans-serif; font-size: 14px; display: block; margin-bottom: 5px;">Font Size:</label>
+        <input type="number" id="fontSize" name="fontSize" min="10" max="50" style="width: 100%; padding: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px;"><br>
+  
+        <!-- Font Family -->
+        <label for="fontFamily" style="font-family: Arial, sans-serif; font-size: 14px; display: block; margin-bottom: 5px;">Font Family:</label>
+        <select id="fontFamily" name="fontFamily" style="width: 100%; padding: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px;">
+            <option value="Arial">Arial</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Courier New">Courier New</option>
+        </select><br>
+  
+        <!-- Background Color -->
+        <label for="backgroundColor" style="font-family: Arial, sans-serif; font-size: 14px; display: block; margin-bottom: 5px;">Background Color:</label>
+        <input type="color" id="backgroundColor" name="backgroundColor" style="width: 100%; margin-bottom: 15px;"><br>
+    </div>
+  </div>
+  
+  <script>
+    // Open the settings popup
+    document.getElementById('settingsBtn').addEventListener('click', function() {
+        document.getElementById('settingsPopup').style.display = 'flex';
+    });
+  
+    // Close the settings popup
+    document.getElementById('closePopup').addEventListener('click', function() {
+        document.getElementById('settingsPopup').style.display = 'none';
+    });
+  
+    // Event listeners to update settings instantly in localStorage (no page style change in searchform.html)
+    document.getElementById('fontColor').addEventListener('input', function() {
+        const fontColor = this.value;
+        localStorage.setItem('fontColor', fontColor);
+    });
+  
+    document.getElementById('fontSize').addEventListener('input', function() {
+        const fontSize = this.value;
+        localStorage.setItem('fontSize', fontSize);
+    });
+  
+    document.getElementById('fontFamily').addEventListener('change', function() {
+        const fontFamily = this.value;
+        localStorage.setItem('fontFamily', fontFamily);
+    });
+  
+    document.getElementById('backgroundColor').addEventListener('input', function() {
+        const backgroundColor = this.value;
+        localStorage.setItem('backgroundColor', backgroundColor);
+    });
+  </script>
+  
+  
+
+
+  
+<script>
+  // Array to store the recent book selections
+  let recentBooks = [];
+
+  // Load recent books from localStorage when the page loads
+  function loadRecentBooks() {
+    const storedBooks = localStorage.getItem('recentBooks');
+    if (storedBooks) {
+      recentBooks = JSON.parse(storedBooks);
+      updateRecentBooksUI();
+    }
+  }
+
+  // Handle book selection and update the recent selections list
+  function handleBookSelection() {
+    const bookSelect = document.getElementById('book');
+    const selectedBook = bookSelect.options[bookSelect.selectedIndex].text;
+
+    // Add the selected book to the beginning of the recentBooks array
+    if (!recentBooks.includes(selectedBook)) {
+      recentBooks.unshift(selectedBook);
+    }
+
+    // Ensure the array only contains up to 5 recent books
+    if (recentBooks.length > 5) {
+      recentBooks.pop();
+    }
+
+    // Save the recent books list to localStorage
+    localStorage.setItem('recentBooks', JSON.stringify(recentBooks));
+
+    // Update the recent books list in the UI
+    updateRecentBooksUI();
+  }
+
+  // Update the recent books list in the UI
+  function updateRecentBooksUI() {
+    const recentBooksList = document.getElementById('recent-books-list');
+    recentBooksList.innerHTML = '';
+    recentBooks.forEach(book => {
+      const listItem = document.createElement('li');
+      listItem.textContent = book;
+      listItem.style.backgroundColor = "#f2f9fc";
+      listItem.style.padding = "10px 15px";
+      listItem.style.marginBottom = "8px";
+      listItem.style.borderRadius = "8px";
+      listItem.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.1)";
+      listItem.style.transition = "transform 0.2s ease, background-color 0.2s ease";
+      listItem.style.cursor = "pointer";
+
+      // Add hover effect for list item
+      listItem.addEventListener('mouseenter', function () {
+        listItem.style.backgroundColor = "#d3e9f7";
+        listItem.style.transform = "scale(1.05)";
+      });
+
+      listItem.addEventListener('mouseleave', function () {
+        listItem.style.backgroundColor = "#f2f9fc";
+        listItem.style.transform = "scale(1)";
+      });
+
+      recentBooksList.appendChild(listItem);
+    });
+  }
+
+  // Load the recent books when the page loads
+  document.addEventListener('DOMContentLoaded', loadRecentBooks);
+</script>
+  
+        <div id="verses-container" class="row mb-2" style="    width: 917px;
+            margin-top: -454px;
+        margin-left: 327px;">
+        
+            <div class="col-6">
+                <a href="/verse_present/?book=Genesis&chapter=1&versecount=1" class="verse-link">
+                    Tamil Verse 1: In the beginning God created the heaven and the earth.
+                </a>
+            </div>
+            <div class="col-6">
+                <a href="/verse_present/?book=Genesis&chapter=1&versecount=1" class="verse-link">
+                    KJV Verse 1: In the beginning God created the heaven and the earth.
+                </a>
+            </div>
+        </div>
+        
+
+     
+        
+
+  
+    <!-- javascript 10-01-2024 -->
+    <script>
+        // Fetch chapters based on the selected book
+        function fetchChapters() {
+            const book = document.getElementById('book').value;
+            const chapterSelect = document.getElementById('chapter');
+            chapterSelect.innerHTML = '<option value="" disabled selected>Select Chapter</option>'; // Clear previous options
+
+            if (book) {
+                fetch(`/get-chapters/${book}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.chapters.forEach(chapter => {
+                            const option = document.createElement('option');
+                            option.value = chapter;
+                            option.innerText = chapter;
+                            chapterSelect.appendChild(option);
+                        });
+                    });
+            }
+        }
+
+        // ####################### seperate kjv and tamil verse seperate colomn
+//         function fetchVerseCounts() {
+//     const book = document.getElementById('book').value;
+//     const chapter = document.getElementById('chapter').value;
+//     const verseSelect = document.getElementById('versecount');
+//     const versesContainer = document.getElementById('verses-container');
+
+//     verseSelect.innerHTML = '<option value="" disabled selected>Select Verse</option>'; // Clear previous options
+//     versesContainer.innerHTML = ''; // Clear previous verses content
+
+//     if (book && chapter) {
+//         fetch(`/get-versecounts/${book}/${chapter}/`)
+//             .then(response => response.json())
+//             .then(data => {
+//                 console.log('Fetched versecounts:', data.versecounts);
+
+//                 if (data.versecounts.length > 0) {
+//                     // Create a table element
+//                     const table = document.createElement('table');
+//                     table.classList.add('table', 'table-bordered'); // Bootstrap styling
+
+//                     // Create a table header row
+//                     const tableHeader = document.createElement('thead');
+//                     const headerRow = document.createElement('tr');
+//                     headerRow.innerHTML = '<th>Tamil Verse</th><th>KJV Verse</th>';
+//                     tableHeader.appendChild(headerRow);
+//                     table.appendChild(tableHeader);
+
+//                     // Create the table body
+//                     const tableBody = document.createElement('tbody');
+
+//                     // Loop through verses and populate Tamil and KJV columns
+//                     data.versecounts.forEach(item => {
+//                         // Create a row for each verse pair
+//                         const row = document.createElement('tr');
+
+//                         // Create the Tamil verse cell with width and padding
+//                         const tamilCell = document.createElement('td');
+//                         tamilCell.style.width = '600px';
+//                         tamilCell.style.paddingBottom = '20px'; // Add space below the Tamil verse
+//                         const tamilVerseLink = document.createElement('a');
+//                         tamilVerseLink.href =`#`
+//                         // tamilVerseLink.href = `/verse_present/?book=${book}&chapter=${chapter}&versecount=${item.versecount}`;
+//                         // tamilVerseLink.target = 'blank';
+//                         tamilVerseLink.style.fontWeight = 'bold'; 
+//                         tamilVerseLink.style.color = 'black'; 
+//                         tamilVerseLink.innerText = `Tamil Verse ${item.versecount}: ${item.verse}`;
+//                         tamilVerseLink.classList.add('verse-link');
+//                         tamilCell.appendChild(tamilVerseLink);
+
+//                         // Create the KJV verse cell with width and padding
+//                         const kjvCell = document.createElement('td');
+//                         kjvCell.style.width = '600px';
+//                         kjvCell.style.paddingBottom = '20px'; // Add space below the KJV verse
+//                         const kjvVerseLink = document.createElement('a');
+//                         kjvVerseLink.style.fontWeight = 'bold'; 
+//                         kjvVerseLink.href = `/verse_present/?book=${book}&chapter=${chapter}&versecount=${item.versecount}`;
+//                         kjvVerseLink.target = 'blank';
+//                         kjvVerseLink.style.color = 'black';
+//                         kjvVerseLink.innerText = `KJV Verse ${item.versecount}: ${item.kjv}`;
+//                         kjvVerseLink.classList.add('verse-link');
+//                         kjvCell.appendChild(kjvVerseLink);
+
+//                         // Append the cells to the row
+//                         row.appendChild(tamilCell);
+//                         row.appendChild(kjvCell);
+
+//                         // Append the row to the table body
+//                         tableBody.appendChild(row);
+
+//                         // Create an option in the versecount dropdown
+//                         const option = document.createElement('option');
+//                         option.value = item.versecount;
+//                         option.innerText = `${item.versecount}`;
+//                         verseSelect.appendChild(option);
+//                     });
+
+//                     // Append the table body to the table
+//                     table.appendChild(tableBody);
+
+//                     // Append the table to the main verses container
+//                     versesContainer.appendChild(table);
+//                 } else {
+//                     versesContainer.innerHTML = '<p>No verses found for this chapter.</p>';
+//                 }
+//             })
+//             .catch(error => {
+//                 console.error('Error fetching verses:', error);
+//             });
+//     }
+// }
+
+// function fetchSelectedVerse() {
+//     const book = document.getElementById('book').value;
+//     const chapter = document.getElementById('chapter').value;
+//     const versecount = document.getElementById('versecount').value;
+//     const versesContainer = document.getElementById('verses-container');
+
+//     if (book && chapter && versecount) {
+//         fetch(`/get-verse-details/${book}/${chapter}/${versecount}/`)
+//             .then(response => response.json())
+//             .then(data => {
+//                 versesContainer.innerHTML = ''; // Clear previous verses content
+
+//                 // Create a table element
+//                 const table = document.createElement('table');
+//                 table.classList.add('table', 'table-bordered'); // Bootstrap styling
+
+//                 // Create a table header row
+//                 const tableHeader = document.createElement('thead');
+//                 const headerRow = document.createElement('tr');
+//                 headerRow.innerHTML = '<th>Tamil Verse</th><th>KJV Verse</th>';
+//                 tableHeader.appendChild(headerRow);
+//                 table.appendChild(tableHeader);
+
+//                 // Create the table body
+//                 const tableBody = document.createElement('tbody');
+//                 const row = document.createElement('tr');
+
+//                 // Create the Tamil verse cell
+//                 const tamilCell = document.createElement('td');
+//                 const tamilVerseLink = document.createElement('a');
+//                 tamilVerseLink.href = `/verse_present/?book=${book}&chapter=${chapter}&versecount=${versecount}`;
+//                 tamilVerseLink.target = 'blank'; // Open in a new tab
+//                 tamilVerseLink.style.color = 'black'; // Add black font color
+//                 tamilVerseLink.style.fontWeight = 'bold'; 
+//                 tamilVerseLink.innerText = `Tamil Verse ${versecount}: ${data.tamil}`; // Display Tamil verse
+//                 tamilVerseLink.classList.add('verse-link');
+//                 tamilCell.appendChild(tamilVerseLink);
+
+//                 // Create the KJV verse cell
+//                 const kjvCell = document.createElement('td');
+//                 const kjvVerseLink = document.createElement('a');
+//                 kjvVerseLink.href = `/verse_present/?book=${book}&chapter=${chapter}&versecount=${versecount}`;
+//                 kjvVerseLink.target = 'blank'; // Open in a new tab
+//                 kjvVerseLink.innerText = `KJV Verse ${versecount}: ${data.kjv}`; // Display KJV verse
+//                 kjvVerseLink.classList.add('verse-link');
+//                 kjvVerseLink.style.fontWeight = 'bold'; 
+//                 kjvVerseLink.style.color = 'black'; 
+//                 kjvCell.appendChild(kjvVerseLink);
+
+//                 // Append the cells to the row
+//                 row.appendChild(tamilCell);
+//                 row.appendChild(kjvCell);
+
+//                 // Append the row to the table body
+//                 tableBody.appendChild(row);
+
+//                 // Append the table body to the table
+//                 table.appendChild(tableBody);
+
+//                 // Append the table to the verses container
+//                 versesContainer.appendChild(table);
+//             })
+//             .catch(error => {
+//                 console.error('Error fetching verse details:', error);
+//             });
+//     }
+// }
+</script>
+
+<script>
+    // Establish WebSocket connection
+    const socket = new WebSocket('ws://' + window.location.host + '/ws/verse/');
+
+    // When connected to WebSocket
+    socket.onopen = function(event) {
+        console.log("WebSocket connection established!");
+    };
+
+    // When a message is received
+    socket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        // Update the 'verse_present.html' with the received data
+        updateVersePresent(data.book, data.chapter, data.versecount);
+    };
+
+    // Send search data to WebSocket server
+    function searchVerse() {
+        const book = document.getElementById('book').value;
+        const chapter = document.getElementById('chapter').value;
+        const versecount = document.getElementById('versecount').value;
+
+        socket.send(JSON.stringify({
+            'book': book,
+            'chapter': chapter,
+            'versecount': versecount,
+        }));
+    }
+
+    // Function to update 'verse_present.html' dynamically
+    function updateVersePresent(book, chapter, versecount) {
+        // You can use an AJAX call to fetch the new verse details or use WebSocket to directly update the content.
+        console.log('Book:', book, 'Chapter:', chapter, 'Verse:', versecount);
+        // Do something with the data, e.g., update the DOM
+    }
+
+    socket.onclose = function(event) {
+    if (event.wasClean) {
+        console.log("Closed cleanly");
+    } else {
+        console.error("Connection error");
+    }
+};
+
+</script>
+
+<!-- 7_02_25 external script -->
+<!-- <script>
+    let songTab = null; // Store reference to the opened tab
+    console.log('print',)
+    document.querySelectorAll(".verse-link").forEach(paragraph => {
+        paragraph.addEventListener("click", function () {
+            const songText = this.innerHTML.trim(); // Get clicked paragraph text
+
+            if (!songTab || songTab.closed) {
+                // Open the tab with a name ("songWindow") to reuse it
+                songTab = window.open("", "songWindow", "width=800,height=600");
+                songTab.document.write(`
+                    <html>
+                    <head>
+                        <title>Fullscreen Lyrics</title>
+                        <style>
+                            body { 
+                                background: black; 
+                                color: white; 
+                                font-size: 28px; 
+                                display: flex; 
+                                justify-content: center; 
+                                align-items: center; 
+                                height: 100vh; 
+                                text-align: center; 
+                                padding: 20px;
+                                white-space: pre-wrap;
+                            }
+                            .lyrics { 
+                                max-width: 80%; 
+                                line-height: 1.6; 
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="lyrics">${songText}</div>
+                    </body>
+                    </html>
+                `);
+                songTab.document.close();
+            } else {
+                // Update the content of the already opened tab
+                songTab.document.body.innerHTML = `<div class="lyrics">${songText}</div>`;
+            }
+
+            songTab.document.title = "Fullscreen Lyrics"; // Keep title consistent
+            songTab.focus(); // Bring the tab to the foreground
+        });
+    });
+</script> -->
+
+<!-- fetchversecounts and external script -->
+<script>
+function fetchVerseCounts() {
+    const book = document.getElementById('book').value;
+    const chapter = document.getElementById('chapter').value;
+    const verseSelect = document.getElementById('versecount');
+    const versesContainer = document.getElementById('verses-container');
+
+    verseSelect.innerHTML = '<option value="" disabled selected>Select Verse</option>'; // Clear previous options
+    versesContainer.innerHTML = ''; // Clear previous verses content
+
+    if (book && chapter) {
+        fetch(`/get-versecounts/${book}/${chapter}/`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched versecounts:', data.versecounts);
+
+                if (data.versecounts.length > 0) {
+                    // Create a table element
+                    const table = document.createElement('table');
+                    table.classList.add('table', 'table-bordered'); // Bootstrap styling
+
+                    // Create a table header row
+                    const tableHeader = document.createElement('thead');
+                    const headerRow = document.createElement('tr');
+                    headerRow.innerHTML = '<th>Tamil Verse</th><th>KJV Verse</th>';
+                    tableHeader.appendChild(headerRow);
+                    table.appendChild(tableHeader);
+
+                    // Create the table body
+                    const tableBody = document.createElement('tbody');
+
+                    // Loop through verses and populate Tamil and KJV columns
+                    data.versecounts.forEach(item => {
+                        // Create a row for each verse pair
+                        const row = document.createElement('tr');
+
+                        // Create the Tamil verse cell with width and padding
+                        const tamilCell = document.createElement('td');
+                        tamilCell.style.width = '600px';
+                        tamilCell.style.paddingBottom = '20px'; // Add space below the Tamil verse
+                        const tamilVerseLink = document.createElement('a');
+                        tamilVerseLink.style.fontWeight = 'bold';
+                        tamilVerseLink.style.color = 'black';
+                        tamilVerseLink.innerText = `Tamil Verse ${item.versecount}: ${item.verse}`;
+                        tamilVerseLink.classList.add('verse-link');
+
+                        // Add event listener to open the verse in a new tab
+                        // tamilVerseLink.addEventListener('click', function () {
+                        //     openVerseInTab(item.verse);
+                        // });
+                        
+                        // with all data eventlistner
+                        tamilVerseLink.addEventListener('click', function () {
+                            openVerseInTab(item); // Pass the full item to the openVerseInTab function
+                            });
+
+                        tamilCell.appendChild(tamilVerseLink);
+
+                        // Create the KJV verse cell with width and padding
+                        const kjvCell = document.createElement('td');
+                        kjvCell.style.width = '600px';
+                        kjvCell.style.paddingBottom = '20px'; // Add space below the KJV verse
+                        const kjvVerseLink = document.createElement('a');
+                        kjvVerseLink.style.fontWeight = 'bold';
+                        kjvVerseLink.style.color = 'black';
+                        kjvVerseLink.innerText = `KJV Verse ${item.versecount}: ${item.kjv}`;
+                        kjvVerseLink.classList.add('verse-link');
+
+                        // Add event listener to open the verse in a new tab
+                        // kjvVerseLink.addEventListener('click', function () {
+                        //     openVerseInTab(item.kjv);
+                        // });
+
+                        kjvVerseLink.addEventListener('click', function () {
+                            openVerseInTab(item); // Pass the full item to the openVerseInTab function
+                        });
+
+                        kjvCell.appendChild(kjvVerseLink);
+
+                        // Append the cells to the row
+                        row.appendChild(tamilCell);
+                        row.appendChild(kjvCell);
+
+                        // Append the row to the table body
+                        tableBody.appendChild(row);
+
+                        // Create an option in the versecount dropdown
+                        const option = document.createElement('option');
+                        option.value = item.versecount;
+                        option.innerText = `${item.versecount}`;
+                        verseSelect.appendChild(option);
+                    });
+
+                    // Append the table body to the table
+                    table.appendChild(tableBody);
+
+                    // Append the table to the main verses container
+                    versesContainer.appendChild(table);
+                } else {
+                    versesContainer.innerHTML = '<p>No verses found for this chapter.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching verses:', error);
+            });
+    }
+}
+
+// updated fetchselectedverse function
+// function fetchSelectedVerse() {
+//     const versecount = document.getElementById('versecount').value;
+//     const book = document.getElementById('book').value;
+//     const chapter = document.getElementById('chapter').value;
+
+//     if (book && chapter && versecount) {
+//         fetch(`/get-verse/${book}/${chapter}/${versecount}/`)
+//             .then(response => response.json())
+//             .then(data => {
+//                 console.log('Fetched selected verse:', data);
+
+//                 if (data && data.verse) {
+//                     // After fetching the selected verse, add event listeners to the verse links
+//                     const tamilVerseLink = document.querySelector(`#tamil-verse-${versecount}`);
+//                     const kjvVerseLink = document.querySelector(`#kjv-verse-${versecount}`);
+
+//                     // Ensure the event listener is triggered on the verse links
+//                     tamilVerseLink.addEventListener('click', function () {
+//                         openVerseInTab(data); // Pass the full item to openVerseInTab
+//                     });
+
+//                     kjvVerseLink.addEventListener('click', function () {
+//                         openVerseInTab(data); // Pass the full item to openVerseInTab
+//                     });
+//                 }
+//             })
+//             .catch(error => {
+//                 console.error('Error fetching selected verse:', error);
+//             });
+//     }
+// }
+
+// ###################
+
+
+function fetchSelectedVerse() {
+    const versecount = document.getElementById('versecount').value;
+    const book = document.getElementById('book').value;
+    const chapter = document.getElementById('chapter').value;
+    const versesContainer = document.getElementById('verses-container');
+
+    if (book && chapter && versecount) {
+        fetch(`/get-verse/${book}/${chapter}/${versecount}/`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Fetched selected verse:', data);
+
+                // Clear previous verses content
+                versesContainer.innerHTML = ''; 
+
+                // Create a table element
+                const table = document.createElement('table');
+                table.classList.add('table', 'table-bordered'); // Bootstrap styling
+
+                // Create a table header row
+                const tableHeader = document.createElement('thead');
+                const headerRow = document.createElement('tr');
+                headerRow.innerHTML = '<th>Tamil Verse</th><th>KJV Verse</th>';
+                tableHeader.appendChild(headerRow);
+                table.appendChild(tableHeader);
+
+                // Create the table body
+                const tableBody = document.createElement('tbody');
+                const row = document.createElement('tr');
+
+                // Create the Tamil verse cell
+                const tamilCell = document.createElement('td');
+                const tamilVerseLink = document.createElement('a');
+                tamilVerseLink.href = `/verse_present/?book=${book}&chapter=${chapter}&versecount=${versecount}`;
+                tamilVerseLink.target = 'blank'; // Open in a new tab
+                tamilVerseLink.style.color = 'black'; // Add black font color
+                tamilVerseLink.style.fontWeight = 'bold'; 
+                tamilVerseLink.innerText = `Tamil Verse ${versecount}: ${data.tamil}`; // Display Tamil verse
+                tamilVerseLink.classList.add('verse-link');
+                tamilCell.appendChild(tamilVerseLink);
+
+                // Create the KJV verse cell
+                const kjvCell = document.createElement('td');
+                const kjvVerseLink = document.createElement('a');
+                kjvVerseLink.href = `/verse_present/?book=${book}&chapter=${chapter}&versecount=${versecount}`;
+                kjvVerseLink.target = 'blank'; // Open in a new tab
+                kjvVerseLink.innerText = `KJV Verse ${versecount}: ${data.kjv}`; // Display KJV verse
+                kjvVerseLink.classList.add('verse-link');
+                kjvVerseLink.style.fontWeight = 'bold'; 
+                kjvVerseLink.style.color = 'black'; 
+                kjvCell.appendChild(kjvVerseLink);
+
+                // Append the cells to the row
+                row.appendChild(tamilCell);
+                row.appendChild(kjvCell);
+
+                // Append the row to the table body
+                tableBody.appendChild(row);
+
+                // Append the table body to the table
+                table.appendChild(tableBody);
+
+                // Append the table to the verses container
+                versesContainer.appendChild(table);
+
+                // Add event listeners for opening the verse in a new tab
+                const tamilVerseLinkElement = document.querySelector(`#tamil-verse-${versecount}`);
+                const kjvVerseLinkElement = document.querySelector(`#kjv-verse-${versecount}`);
+
+                if (tamilVerseLinkElement) {
+                    tamilVerseLinkElement.addEventListener('click', function () {
+                        openVerseInTab(data); // Pass the full item to openVerseInTab
+                    });
+                }
+
+                if (kjvVerseLinkElement) {
+                    kjvVerseLinkElement.addEventListener('click', function () {
+                        openVerseInTab(data); // Pass the full item to openVerseInTab
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching selected verse:', error);
+            });
+    }
+}
+
+// function openVerseInTab(item) {
+//     let songTab = null; // Store reference to the opened tab
+
+//     // Prepare the content to display: Tamil verse, KJV verse, Book name, Chapter, Verse number
+//     const verseContent = `
+//         <html>
+//             <head>
+//                 <title>Fullscreen Verse</title>
+//                 <style>
+//                     body { 
+//                         background: black; 
+//                         color: white; 
+//                         font-size: 24px; 
+//                         display: flex; 
+//                         justify-content: center; 
+//                         align-items: center; 
+//                         height: 100vh; 
+//                         text-align: center; 
+//                         padding: 20px;
+//                         white-space: pre-wrap;
+//                     }
+//                     .content { 
+//                         max-width: 80%; 
+//                         line-height: 1.6; 
+//                     }
+//                     .verse-header {
+//                         font-size: 28px;
+//                         font-weight: bold;
+//                         margin-top: 400px;
+//                     }
+//                     .verse-text {
+//                         font-size: 22px;
+//                         padding-bottom: 400px;
+//                     }
+//                     .verse-header p {
+//                         margin: 1px;
+//                     }
+//                 </style>
+//             </head>
+//             <body>
+//                 <div class="content">
+//                     <div class="verse-header">
+//                         <!-- Book name in English and Tamil -->
+//                         <p><strong>${item.bookname}</strong> (${item.tamilname})</p>
+//                         <!-- Chapter and Verse information -->
+//                         <p><strong>Chapter:</strong> ${item.chapter} <strong>Verse:</strong> ${item.versecount}</p>
+//                     </div>
+//                     <div class="verse-text">
+//                         <p><strong>Tamil Verse:</strong><br/> ${item.verse}</p>
+//                         <p><strong>KJV Verse:</strong><br/> ${item.kjv}</p>
+//                     </div>
+//                 </div>
+//             </body>
+//         </html>
+//     `;
+
+//     if (!songTab || songTab.closed) {
+//         // Open the tab with a name ("songWindow") to reuse it
+//         songTab = window.open("", "songWindow", "width=800,height=600");
+//         songTab.document.write(verseContent);
+//         songTab.document.close();
+//     } else {
+//         // Update the content of the already opened tab
+//         songTab.document.body.innerHTML = verseContent;
+//     }
+
+//     songTab.document.title = "Fullscreen Verse"; // Keep title consistent
+//     songTab.focus(); // Bring the tab to the foreground
+// }
+
+// fullscreen trial ############################
+// Declare a global variable to store the songTab reference
+
+// updated openversetab for full screen 1
+
+// let songTab = null; // Store reference to the opened tab
+
+// Function to open the verse in a new tab
+// function openVerseInTab(item) {
+//     // Prepare the content to display: Tamil verse, KJV verse, Book name, Chapter, Verse number
+//     const verseContent = `
+//         <html>
+//             <head>
+//                 <title>Fullscreen Verse</title>
+//                 <style>
+//                     body { 
+//                         background: black; 
+//                         color: white; 
+//                         font-size: 24px; 
+//                         display: flex; 
+//                         justify-content: center; 
+//                         align-items: center; 
+//                         height: 100vh; 
+//                         text-align: center; 
+//                         padding: 20px;
+//                         white-space: pre-wrap;
+//                     }
+//                     .content { 
+//                         max-width: 80%; 
+//                         line-height: 1.6; 
+//                     }
+//                     .verse-header {
+//                         font-size: 28px;
+//                         font-weight: bold;
+//                         margin-top: 400px;
+//                     }
+//                     .verse-text {
+//                         font-size: 22px;
+//                         padding-bottom: 400px;
+//                     }
+//                     .verse-header p {
+//                         margin: 1px;
+//                     }
+//                 </style>
+//             </head>
+//             <body>
+//                 <div class="content">
+//                     <div class="verse-header">
+//                         <!-- Book name in English and Tamil -->
+//                         <p><strong>${item.bookname}</strong> (${item.tamilname})</p>
+//                         <!-- Chapter and Verse information -->
+//                         <p><strong>Chapter:</strong> ${item.chapter} <strong>Verse:</strong> ${item.versecount}</p>
+//                     </div>
+//                     <div class="verse-text">
+//                         <p><strong>Tamil Verse:</strong><br/> ${item.verse}</p>
+//                         <p><strong>KJV Verse:</strong><br/> ${item.kjv}</p>
+//                     </div>
+//                 </div>
+//             </body>
+//         </html>
+//     `;
+
+//     if (!songTab || songTab.closed) {
+//         // Open the tab with a name ("songWindow") to reuse it
+//         songTab = window.open("", "songWindow", "width=800,height=600");
+//         songTab.document.write(verseContent);
+//         songTab.document.close();
+//     } else {
+//         // Update the content of the already opened tab
+//         songTab.document.body.innerHTML = verseContent;
+//     }
+
+//     songTab.document.title = "Fullscreen Verse"; // Keep title consistent
+//     songTab.focus(); // Bring the tab to the foreground
+// }
+
+// // Function to trigger fullscreen mode on the newly opened tab
+// function goFullscreen() {
+//     if (songTab) {
+//         const doc = songTab.document.documentElement; // Get the document element of the opened tab
+
+//         // Check if the Fullscreen API is supported and request fullscreen mode
+//         if (doc.requestFullscreen) {
+//             doc.requestFullscreen();
+//         } else if (doc.mozRequestFullScreen) { // Firefox
+//             doc.mozRequestFullScreen();
+//         } else if (doc.webkitRequestFullscreen) { // Chrome, Safari, Opera
+//             doc.webkitRequestFullscreen();
+//         } else if (doc.msRequestFullscreen) { // IE/Edge
+//             doc.msRequestFullscreen();
+//         }
+//     }
+// }
+
+// // Event listener for the fullscreen button click
+// document.getElementById('fullscreenBtn').addEventListener('click', function() {
+//     goFullscreen(); // Trigger the fullscreen mode on the opened tab
+// });
+
+// updated code 2 debug consolelog for full screen
+
+
+// Declare a global variable to store the songTab reference
+let songTab = null; // Store reference to the opened tab
+
+// Function to open the verse in a new tab
+function openVerseInTab(item) {
+    console.log("openVerseInTab called for item:", item); // Log the item being passed
+
+    // Prepare the content to display: Tamil verse, KJV verse, Book name, Chapter, Verse number
+    const verseContent = `
+        <html>
+            <head>
+                <title>Fullscreen Verse</title>
+                <style>
+                    body { 
+                        background: black; 
+                        color: white; 
+                        font-size: 24px; 
+                        display: flex; 
+                        justify-content: center; 
+                        align-items: center; 
+                        height: 100vh; 
+                        text-align: center; 
+                        padding: 20px;
+                        white-space: pre-wrap;
+                    }
+                    .content { 
+                        max-width: 80%; 
+                        line-height: 1.6; 
+                    }
+                    .verse-header {
+                        font-size: 28px;
+                        font-weight: bold;
+                        margin-top: 400px;
+                    }
+                    .verse-text {
+                        font-size: 22px;
+                        padding-bottom: 400px;
+                    }
+                    .verse-header p {
+                        margin: 1px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="content">
+                    <div class="verse-header">
+                        <!-- Book name in English and Tamil -->
+                        <p><strong>${item.bookname}</strong> (${item.tamilname})</p>
+                        <!-- Chapter and Verse information -->
+                        <p><strong>Chapter:</strong> ${item.chapter} <strong>Verse:</strong> ${item.versecount}</p>
+                    </div>
+                    <div class="verse-text">
+                        <p><strong>Tamil Verse:</strong><br/> ${item.verse}</p>
+                        <p><strong>KJV Verse:</strong><br/> ${item.kjv}</p>
+                    </div>
+                </div>
+            </body>
+        </html>
+    `;
+
+    // Check if the songTab is already opened or closed
+    if (!songTab || songTab.closed) {
+        console.log("Opening a new tab");
+        // Open the tab with a name ("songWindow") to reuse it
+        songTab = window.open("", "songWindow", "width=800,height=600");
+        songTab.document.write(verseContent);
+        songTab.document.close();
+    } else {
+        console.log("Updating the existing tab");
+        // Update the content of the already opened tab
+        songTab.document.body.innerHTML = verseContent;
+    }
+
+    songTab.document.title = "Fullscreen Verse"; // Keep title consistent
+    songTab.focus(); // Bring the tab to the foreground
+}
+
+// Function to trigger fullscreen mode on the newly opened tab
+function goFullscreen() {
+    console.log("Attempting to go fullscreen on songTab:", songTab); // Log the tab reference
+
+    if (songTab) {
+        const doc = songTab.document.documentElement; // Get the document element of the opened tab
+
+        // Log the fullscreen support
+        console.log("Requesting fullscreen for the opened tab document");
+
+        // Check if the Fullscreen API is supported and request fullscreen mode
+        if (doc.requestFullscreen) {
+            console.log("Using requestFullscreen method.");
+            doc.requestFullscreen();
+        } else if (doc.mozRequestFullScreen) { // Firefox
+            console.log("Using mozRequestFullScreen method (Firefox).");
+            doc.mozRequestFullScreen();
+        } else if (doc.webkitRequestFullscreen) { // Chrome, Safari, Opera
+            console.log("Using webkitRequestFullscreen method (Webkit).");
+            doc.webkitRequestFullscreen();
+        } else if (doc.msRequestFullscreen) { // IE/Edge
+            console.log("Using msRequestFullscreen method (IE/Edge).");
+            doc.msRequestFullscreen();
+        } else {
+            console.log("Fullscreen API is not supported in this browser.");
+        }
+    } else {
+        console.log("songTab is not open or has been closed.");
+    }
+}
+
+// Event listener for the fullscreen button click
+document.getElementById('fullscreenBtn').addEventListener('click', function() {
+    console.log("Fullscreen button clicked");
+    goFullscreen(); // Trigger the fullscreen mode on the opened tab
+});
+
+</script>
+</body>
+
+</html>

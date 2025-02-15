@@ -1,0 +1,326 @@
+<!-- index.html -->
+<!-- {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Viewer</title>
+</head>
+<body>
+    <h1>Click the data to view on secondary screen</h1>
+    <button id="view_data" onclick="viewData()">View Data on Secondary Screen</button>
+    <form action="{% url 'view_data' %}" method="get">
+        <input type="text" name="book" placeholder="Enter Book">
+        <input type="number" name="chapter" placeholder="Enter Chapter">
+        <input type="number" name="verse" placeholder="Enter Verse">
+        <button type="submit">Submit</button>
+    </form>
+    
+    <script>
+
+
+        function viewData() {
+            // Use fetch API to send data request to Django backend
+            fetch('/view-data/')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); // Handle the response (data) here
+                    // You could trigger PyQt6 application here by sending a request
+                });
+        }
+    </script>
+</body>
+</html> -->
+<!--   10-02-afternoon  -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible Verse Lookup</title>
+</head>
+<body>
+    <h1>Fetch Bible Verse</h1>
+    <form action="{% url 'view_data' %}" method="get">
+
+        <label for="book">Book:</label>
+        <select name="book" id="book" required>
+            <option value="" disabled selected>Select a Book</option>
+            {% for book in books %}
+            <option value="{{ book.bookname }}" {% if book.bookname == request.GET.bookname %}selected{% endif %}>
+                {{ book.bookname }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label for="chapter">Chapter:</label>
+        <input type="number" name="chapter" id="chapter" placeholder="Enter Chapter" required>
+
+        <label for="verse">Verse:</label>
+        <input type="number" name="verse" id="verse" placeholder="Enter Verse" required>
+
+        <button type="submit">Fetch Verse</button>
+    </form>
+
+    <h2>Verse Result</h2>
+    <div id="result"></div>
+
+    <!-- <script>
+        document.querySelector("form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const book = document.getElementById("book").value;
+            const chapter = document.getElementById("chapter").value;
+            const verse = document.getElementById("verse").value;
+
+            fetch(`/view-data/?book=${book}&chapter=${chapter}&verse=${verse}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById("result").innerHTML = `<p style="color: red;">${data.error}</p>`;
+                    } else {
+                        document.getElementById("result").innerHTML = `
+                            <h3>${data.book} (${data.tamilname}) ${data.chapter}:${data.verse}</h3>
+                            <p><strong>English:</strong> ${data.english}</p>
+                            <p><strong>Tamil:</strong> ${data.tamil}</p>
+                        `;
+                    }
+                })
+                .catch(error => console.error("Error fetching verse:", error));
+        });
+    </script> -->
+
+<!-- 12-02-2025 -->
+<script>
+    document.querySelector("form").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const book = document.getElementById("book").value;
+        const chapter = document.getElementById("chapter").value;
+        const verse = document.getElementById("verse").value;
+
+        fetch(`/view-data/?book=${book}&chapter=${chapter}&verse=${verse}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById("result").innerHTML = `<p style="color: red;">${data.error}</p>`;
+                } else {
+                    document.getElementById("result").innerHTML = `
+                        <h3>${data.book} (${data.tamilname}) ${data.chapter}:${data.verse}</h3>
+                        <p><strong>English:</strong> ${data.english}</p>
+                        <p><strong>Tamil:</strong> ${data.tamil}</p>
+                    `;
+                }
+            })
+            .catch(error => console.error("Error fetching verse:", error));
+    });
+</script>
+
+</body>
+</html>
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Viewer</title>
+</head>
+<body>
+    <h1>Click the button to view new data</h1>
+    <button id="view_data" onclick="viewData()">View Data</button>
+    <div id="data_display">
+         Display the initial data here
+        <p>Initial Data: {{ data }}</p>
+    </div>
+
+    <script>
+        // You can also pass initial data from Django to JavaScript here
+        const initialData = "{{ data|escapejs }}";
+        console.log("Initial Data:", initialData);  // Log initial data to console
+
+        // Function to fetch data from Django backend and update display
+        function viewData() {
+            fetch('/view-data/')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Fetched Data:", data);  // Log fetched data to console
+
+                    // Dynamically update the displayed data in the template
+                    const dataDisplay = document.getElementById('data_display');
+                    dataDisplay.innerHTML = `<p>New Data: ${data.data}</p>`;
+                })
+                .catch(error => console.error("Error fetching data:", error));
+        }
+    </script>
+</body>
+</html> -->
+
+<!-- 11-02-2025 -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible Verse Viewer</title>
+</head>
+<body>
+    <h1>Bible Verse Viewer</h1>
+    <p id="displayData">Some data to display</p>
+
+    <button onclick="viewData()">View Data</button>
+    <input type="text" id="book" placeholder="Enter Book">
+    <input type="number" id="chapter" placeholder="Enter Chapter">
+    <button onclick="fetchVerse()">Fetch Verse</button>
+    <form method="post">
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+        
+    </form>
+    <button onclick="sendToPyQt6()">pyqt6</button> -->
+    <!-- <script>
+        function viewData() {
+            fetch('/view-data/')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('displayData').innerText = data.data;
+                });
+        }
+
+        function fetchVerse() {
+            let book = document.getElementById("book").value;
+            let chapter = document.getElementById("chapter").value;
+
+            fetch(`/fetch-verse/${book}/${chapter}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        document.getElementById("displayData").innerHTML = `
+                            <p><strong>Tamil:</strong> ${data.tamil_version}</p>
+                            <p><strong>KJV:</strong> ${data.kjv_version}</p>
+                        `;
+                    }
+                });
+        } -->
+
+<!-- // function sendToPyQt6() {
+//     let verseData = {
+//         tamil_version: "உங்கள் பதிலாக ஒரு தமிழ் வசனம்",
+//         kjv_version: "A sample KJV verse"
+//     };
+
+//     fetch('/send-to-pyqt6/', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify(verseData)
+//     })
+//     .then(response => response.json())
+//     .then(data => console.log("Response:", data))
+//     .catch(error => console.error('Error:', error));
+// }
+
+
+    // function getCSRFToken() {
+    //     return document.querySelector('input[name="csrfmiddlewaretoken"]').value;
+    // }
+
+    // function sendToPyQt6() {
+    //     let verseData = {
+    //         tamil_version: "உங்கள் பதிலாக ஒரு தமிழ் வசனம்",
+    //         kjv_version: "A sample KJV verse"
+    //     };
+
+    //     fetch('/send-to-pyqt6/', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'X-CSRFToken': getCSRFToken()
+    //         },
+    //         body: JSON.stringify(verseData)
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => console.log("Response:", data))
+    //     .catch(error => console.error('Error:', error));
+    // } -->
+
+<!-- 
+    </script>
+</body>
+</html> -->
+
+<!-- ################################# -->
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible Verse Viewer</title>
+</head>
+<body>
+    <h1>Bible Verse Viewer</h1>
+    <p id="displayData">Some data to display</p>
+
+    <button onclick="viewData()">View Data</button>
+    <input type="text" id="book" placeholder="Enter Book">
+    <input type="number" id="chapter" placeholder="Enter Chapter">
+    <button onclick="fetchVerse()">Fetch Verse</button>
+
+    <script>
+        function viewData() {
+            fetch('/view-data/')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('displayData').innerText = data.data;
+                });
+        }
+
+        function fetchVerse() {
+            let book = document.getElementById("book").value;
+            let chapter = document.getElementById("chapter").value;
+
+            fetch(`/fetch-verse/${book}/${chapter}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        document.getElementById("displayData").innerHTML = `
+                            <p><strong>Tamil:</strong> <span id="tamilVerse" style="cursor: pointer; color: blue;">${data.tamil_version}</span></p>
+                            <p><strong>KJV:</strong> <span id="kjvVerse" style="cursor: pointer; color: blue;">${data.kjv_version}</span></p>
+                        `;
+
+                        // Add click listeners to send data to PyQt6
+                        document.getElementById("tamilVerse").onclick = function () {
+                            sendToPyQt6(data.tamil_version, data.kjv_version);
+                        };
+                        document.getElementById("kjvVerse").onclick = function () {
+                            sendToPyQt6(data.tamil_version, data.kjv_version);
+                        };
+                    }
+                });
+        }
+
+        function sendToPyQt6(tamilVerse, kjvVerse) {
+            let verseData = {
+                tamil_version: tamilVerse,
+                kjv_version: kjvVerse
+            };
+
+            fetch('/send-to-pyqt6/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(verseData)
+            })
+            .then(response => response.json())
+            .then(data => console.log("Response:", data))
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html> -->

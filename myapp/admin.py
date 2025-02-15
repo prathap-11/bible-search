@@ -33,7 +33,19 @@ from .models import BibleDb,OldTestamentBook, Chapter,NewTestamentBook,ChapterNe
 
 # admin.site.register(Authormessage, AuthormessageAdmin)
 ###############################################################
-from .models import TaxonomyBibleStudy,Author,Authormessage
+from .models import TaxonomyBibleStudy,Author,Authormessage,Bible_reference,Bible_kavithaigal_tamil,BookNameTamil,Prasanga_Kuripugal
+
+class BookNameTamilAdmin(ImportExportModelAdmin):
+    list_display=('id','booknametamil',)
+    search_fields=('booknametamil',)
+
+admin.site.register(BookNameTamil,BookNameTamilAdmin)
+
+class PrasangaKuripugalAdmin(ImportExportModelAdmin):
+    list_display=('title','author','url')
+    search_fields=('title','author',)
+
+admin.site.register(Prasanga_Kuripugal,PrasangaKuripugalAdmin)
 
 class TaxonomyBibleStudyAdmin(admin.ModelAdmin):
     list_display=('add_taxonomy',)
@@ -47,10 +59,19 @@ class AuthormessageAdmin(ImportExportModelAdmin):
     list_display=('title','author','url')
     search_fields=('title','author',)
 
+class BibleReferenceAdmin(ImportExportModelAdmin):
+    list_display = ('booknametamil','author','chapter','title',)
+    search_fields = ('booknametamil','author',)
+
+class BibleKavithaigalTamil(ImportExportModelAdmin):
+    list_display=('title','author','url')
+    search_fields=('title','author',)
+
 admin.site.register(TaxonomyBibleStudy,TaxonomyBibleStudyAdmin)
 admin.site.register(Author, AuthorAdmin)
 admin.site.register(Authormessage,AuthormessageAdmin)
-
+admin.site.register(Bible_reference,BibleReferenceAdmin)
+admin.site.register(Bible_kavithaigal_tamil,BibleKavithaigalTamil)
 
 
 ############################################################

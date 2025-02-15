@@ -161,13 +161,13 @@
               Study Tools
             </a>
             <ul class="dropdown-menu" aria-labelledby="studyToolsDropdown">
-              <li><a class="dropdown-item" href="https://tamilbiblesearch.com/tamil-bible-study">Bible Devotions</a></li>
-              <li><a class="dropdown-item" href="https://tamilbiblesearch.com/bible-reference-tamil">Bible References</a></li>
-              <li><a class="dropdown-item" href="https://tamilbiblesearch.com/bible-articles-tamil">Bible Articles</a></li>
-              <li><a class="dropdown-item" href="https://tamilbiblesearch.com/bible-kavithaikal-tamil">Bible Kavithaigal</a></li>
-              <li><a class="dropdown-item" href="https://tamilbiblesearch.com/bible-literature-tamil">Bible Literature</a></li>
-              <li><a class="dropdown-item" href="https://tamilbiblesearch.com/tamil-christian-sermons">Prasanga Kurippugal</a></li>
-              <li><a class="dropdown-item" href="https://tamilbiblesearch.com/christian-drama-tamil">Screenplays</a></li>
+              <li><a class="dropdown-item" href="{% url 'tamil-bible-study'%}">Bible Devotions</a></li>
+              <li><a class="dropdown-item" href="{% url 'bible-reference-tamil'%}">Bible References</a></li>
+              <!-- <li><a class="dropdown-item" href="https://tamilbiblesearch.com/bible-articles-tamil">Bible Articles</a></li> -->
+              <li><a class="dropdown-item" href="{% url 'bible_kavithaigal_tamil'%}">Bible Kavithaigal</a></li>
+              <!-- <li><a class="dropdown-item" href="https://tamilbiblesearch.com/bible-literature-tamil">Bible Literature</a></li> -->
+              <li><a class="dropdown-item" href="{% url 'tamil_christian_sermons'%}">Prasanga Kurippugal</a></li>
+              <!-- <li><a class="dropdown-item" href="https://tamilbiblesearch.com/christian-drama-tamil">Screenplays</a></li> -->
             </ul>
           </li>
           <li class="nav-item"><a class="nav-link active" href="#!" style="color:black">Quiz</a></li>

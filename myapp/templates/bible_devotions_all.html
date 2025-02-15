@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible Devotions</title>
+</head>
+<body>
+    <h1 style="text-align:center">Bible Devotions</h1>
+    <div class="container">
+        <div class="grid">
+            {% for devotion in all_devotions %}
+            <div class="card">
+                <h3>{{ devotion.title }}</h3>
+                <p> {{ devotion.tamil_bible_message|truncatewords:5 }} </p>  <!-- Truncate the message to avoid long text -->
+                <a href="{% url 'sermon_detail' devotion.url %}">Read More</a>
+                <p class="author">{{ devotion.author.add_author }}</p>  <!-- Assuming `add_author` is a field of the `Author` model -->
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+{% endblock %}
+</html>

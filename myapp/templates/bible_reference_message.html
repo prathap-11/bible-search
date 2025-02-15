@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<head>
+    <style>
+        /* General Layout */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fb;
+            margin: 0;
+            padding: 0;
+        }
+        @keyframes rollRibbon {
+                0% {
+                    left: -100%;
+                }
+                100% {
+                    left: 100%;
+                }
+            }
+
+          
+    .verse-of-the-day:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .verse-of-the-day h1:hover {
+        color: #4CAF50;
+    }
+
+    .verse-of-the-day p:hover {
+        color: #333;
+    }
+
+    .verse-of-the-day .icon:hover {
+        color: #333;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {% for crumb in breadcrumbs %}
+                    {% if forloop.last %}
+                        <li class="breadcrumb-item active" aria-current="page">{{ crumb.name }}</li>
+                    {% else %}
+                        <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.name }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ol>
+        </nav> -->
+        
+
+        <div class="container" style="display: flex;">
+            <div class="verse-of-the-day" style="    background-color: #fff;
+            border-left: 5px solid #4CAF50;
+            padding: 30px;
+            margin: 20px 0;
+            width: 1712px;
+            font-family: 'Arial', sans-serif;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex
+        ;
+            flex-direction: column;
+            font-size: small;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                <h1 style="font-size: 28px; color: #333; margin-bottom: 15px; font-weight: bold; text-align: center; text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s ease;">
+                 
+                </h1>
+                <p style="font-size: 20px; color: #555; line-height: 1.8; font-weight: 700; text-align: center; transition: color 0.3s ease;">
+                    <p style="font-size: 23px;
+    text-transform: capitalize;">
+                        <strong>{{ reference.title }}</strong>
+                    </p><br>
+                    <!-- <p style="    font-size: large;"><strong>{{ reference.message|safe }}</strong></p><br> -->
+                 </p>
+                <p style="    font-size: large;
+"><strong>{{ reference.author.add_author }}</strong></p>
+              
+                <div style="display: flex;">
+                <a href="#" type="button" class="btn-floating btn-lg btn-fb" style="font-size:25px;margin-left: 269px;
+
+    " ><i class="fa-brands fa-facebook" style="color: blue;"></i></a>
+    
+      <a href="#" type="button" class="btn-floating btn-lg btn-fb" style="font-size:25px;
+" ><i class="fa-brands fa-twitter"></i></a>
+      <a href="#" type="button" class="btn-floating btn-lg btn-fb" style="font-size:25px;
+    " ><i class="fa-brands fa-whatsapp" style="color: green;"></i></a>
+                <!-- target="_blank" -->
+            </div>
+      
+        </div>
+ 
+
+        <div class="container">
+            <div class="verse-of-the-day" style="    background-color: #fff;
+            border-left: 5px solid #4CAF50;
+            padding: 30px;
+            margin: 20px 0;
+           width: 337px;
+            font-family: 'Arial', sans-serif;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex
+        ;
+            flex-direction: column;
+            font-size: small;
+            border-radius: 8px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                    <ul class="explanation-list">
+                        <li style="list-style-type: disclosure-closed;">வெளிப்படுத்தின விசேஷம் 16 - விளக்கவுரை</li>
+                        <li style="list-style-type: disclosure-closed;">வெளிப்படுத்தின விசேஷம் 15 - விளக்கவுரை</li>
+                        <li style="list-style-type: disclosure-closed;">வெளிப்படுத்தின விசேஷம் 14 - விளக்கவுரை</li>
+                        <li style="list-style-type: disclosure-closed;">வெளிப்படுத்தின விசேஷம் 13 - விளக்கவுரை</li>
+                        <li style="list-style-type: disclosure-closed;">ஆகாய் அதிகாரம் 2 - நுட்பநோக்கு விளக்கவுரை</li>
+                        <li style="list-style-type: disclosure-closed;">ஆகாய் அதிகாரம் 1 - நுட்பநோக்கு விளக்கவுரை</li>
+                    </ul>
+            
+               
+                <!-- target="_blank" -->
+            </div>
+        </div>
+    </div>
+        
+</body>
+
+{% endblock %}

@@ -9,6 +9,14 @@ class BibleDb(models.Model):
     verse = models.TextField()
     kjv = models.TextField()
 
+
+
+class UserSelection(models.Model):  # New model to store latest selection
+    bookname = models.CharField(max_length=100)
+    chapter = models.IntegerField()
+    verse = models.IntegerField()
+    timestamp = models.DateTimeField(auto_now=True)
+
 class OldTestamentBook(models.Model):
     bookname = models.CharField(max_length=100)
     booknametamil=models.CharField(max_length=100,null=True)
@@ -98,6 +106,12 @@ class Author(models.Model):
 
     def __str__(self):
         return self.add_author
+    
+class BookNameTamil(models.Model):
+    booknametamil = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.booknametamil
 
 
 # class Authormessage(models.Model):
@@ -133,9 +147,58 @@ class Authormessage(models.Model):
         self.view_count += 1
         self.save()
 
+class Bible_reference(models.Model):
+    title = models.CharField(max_length=100)
+    message = RichTextField(null=True)
+    booknametamil=models.ForeignKey('BookNameTamil', on_delete=models.CASCADE)
+    # booknametamil=models.CharField(max_length=20)
+    chapter = models.CharField(max_length=100)
+    author = models.ForeignKey('Author', on_delete=models.CASCADE, related_name='references')
+    url = models.CharField(max_length=100)
+    view_count = models.IntegerField(default=0)  # Field to track view count
 
+    def __str__(self):
+        return f"{self.author.add_author} - Title: {self.title}"
+
+    # Optionally add a method to increment the view count
+    def increment_view_count(self):
+        self.view_count += 1
+        self.save()
 
 ###################################################
+#model header- id,image,Title,Message,author,url,tags,date,view_count
+
+class Bible_kavithaigal_tamil(models.Model):
+    title=models.CharField(max_length=100)
+    message=RichTextField(null=True)
+    author = models.ForeignKey('Author', on_delete=models.CASCADE, related_name='kavithaigal')
+    url = models.CharField(max_length=100)
+    view_count = models.IntegerField(default=0)  # Field to track view count
+
+    def __str__(self):
+        return f"{self.author.add_author} - Title: {self.title}"
+
+    # Optionally add a method to increment the view count
+    def increment_view_count(self):
+        self.view_count += 1
+        self.save()
+
+class Prasanga_Kuripugal(models.Model):
+    title = models.CharField(max_length=100)
+    url = models.CharField(max_length=100)
+    author = models.ForeignKey('Author', on_delete=models.CASCADE, related_name='prasangam_kuripugal_author')
+    select_tag = models.ManyToManyField('TaxonomyBibleStudy', related_name='prasangam_selected_tags',null=True)
+    tamil_bible_message = RichTextField(null=True, blank=True)
+    view_count = models.IntegerField(default=0)  # Field to track view count
+
+    def __str__(self):
+        return f"{self.author.add_author} - Title: {self.title}"
+
+    # Optionally add a method to increment the view count
+    def increment_view_count(self):
+        self.view_count += 1
+        self.save()
+
 
 from django.db import models
 
